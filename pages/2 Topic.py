@@ -79,7 +79,7 @@ def clean_csv(scopus_file):
 #===upload file===
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
-    st.cache_data.clear()
+    #st.cache_data.clear()
     method = st.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm','BERTopic'))
