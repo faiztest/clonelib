@@ -50,7 +50,7 @@ if uploaded_file is not None:
 
      @st.cache_data(ttl=3600)
      def clean_keyword():      
-        global keyword
+        global keyword, keywords
         key = keywords[keyword]
         keywords = keywords.replace(np.nan, '', regex=True)
         keywords[keyword] = keywords[keyword].astype(str)
