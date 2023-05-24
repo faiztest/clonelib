@@ -15,7 +15,7 @@ st.header("Data visualization")
 st.subheader('Put your CSV file and choose a visualization')
 
 #===body===
-uploaded_file = st.file_uploader("Choose a file")
+uploaded_file = st.file_uploader("Choose a file", type=['csv'])
 if uploaded_file is not None: 
     papers = pd.read_csv(uploaded_file)
     

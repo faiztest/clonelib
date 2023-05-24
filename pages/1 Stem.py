@@ -24,7 +24,7 @@ st.header("Keywords Stem")
 st.subheader('Put your CSV file and choose method')
 
 #===upload===
-uploaded_file = st.file_uploader("Choose your a file")
+uploaded_file = st.file_uploader("Choose your a file", type=['csv'])
 if uploaded_file is not None:
      keywords = pd.read_csv(uploaded_file)
      list_of_column_key = list(keywords.columns)
