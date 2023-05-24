@@ -13,6 +13,7 @@ import streamlit.components.v1 as components
 from io import StringIO
 from nltk.stem.snowball import SnowballStemmer
 import csv
+import sys
 
 #===config===
 st.set_page_config(
@@ -55,6 +56,7 @@ if uploaded_file is not None:
             key = keywords[keyword]
         except KeyError:
             st.error('Error: Please check your Author/Index Keywords column.')
+            sys.exit(1)
         keywords = keywords.replace(np.nan, '', regex=True)
         keywords[keyword] = keywords[keyword].astype(str)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub('-', ' ', x))
