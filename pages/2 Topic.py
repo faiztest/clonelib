@@ -51,7 +51,6 @@ def reset_data():
 #===clean csv===
 @st.cache_data(ttl=2*3600)
 def clean_csv(scopus_file):
-    global topic_abs, paper
     papers = pd.read_csv(scopus_file)
     paper = papers.dropna(subset=['Abstract'])
     paper = paper[~paper.Abstract.str.contains("No abstract available")]
@@ -73,6 +72,7 @@ def clean_csv(scopus_file):
         #===stopword removal===
     stop = stopwords.words('english')
     paper['Abstract_stop'] = paper['Abstract_lem'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+    global topic_abs
     topic_abs = paper.Abstract_stop.values.tolist()
     return topic_abs
 
@@ -86,7 +86,7 @@ if uploaded_file is not None:
         
     #===topic===
     if method == 'Choose...':
-        st.write(uploaded_file)
+        st.write(topic_abs)
 
     elif method is 'pyLDA':
          topic_abs_LDA = [t.split(' ') for t in topic_abs]
