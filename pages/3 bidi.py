@@ -139,16 +139,14 @@ if uploaded_file is not None:
             #res = res[['antecedents', 'consequents', 'antecedents support', 'consequents support', 'support', 'confidence', 'lift', 'conviction']]
             res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            return res
 
         freq_item = freqitem()
 
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
         else:
-            res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
-            #res = res[['antecedents', 'consequents', 'antecedents support', 'consequents support', 'support', 'confidence', 'lift', 'conviction']]
-            res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            res = arm_table()
             st.dataframe(res, use_container_width=True)
                    
              #===visualize===
