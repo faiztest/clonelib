@@ -79,6 +79,7 @@ def clean_csv(scopus_file):
 #===upload file===
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
+    st.cache_data.clear()
     clean_csv(uploaded_file)
     method = st.selectbox(
             'Choose method',
