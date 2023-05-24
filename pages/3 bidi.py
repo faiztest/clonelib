@@ -148,8 +148,8 @@ if uploaded_file is not None:
                    
              #===visualize===
                 
-             if st.button('📈 Generate network visualization'):
-                 with st.spinner('Visualizing, please wait ....'): 
+            if st.button('📈 Generate network visualization'):
+                with st.spinner('Visualizing, please wait ....'): 
                      res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
                      res_node=pd.concat([res['antecedents'],res['consequents']])
                      res_node = res_node.drop_duplicates(keep='first')
