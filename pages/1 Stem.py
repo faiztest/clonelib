@@ -122,13 +122,13 @@ if uploaded_file is not None:
          @st.cache_data(ttl=3600)
          def table_keyword():
              key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
-             retun key
+             return key
          key = table_keyword()
          st.dataframe(key, use_container_width=True)
                   
          @st.cache_data(ttl=3600)
          def convert_dfs(df):
-                return df.to_csv(index=False).encode('utf-8')
+             return df.to_csv(index=False).encode('utf-8')
 
          csv = convert_dfs(key)
          st.download_button(
