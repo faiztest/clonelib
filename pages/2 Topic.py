@@ -47,6 +47,7 @@ def biterm_topic():
 
 def reset_data():
      st.cache_resource.clear()
+     st.cache_data.clear()
      
 #===clean csv===
 @st.cache_data(ttl=2*3600)
@@ -77,9 +78,8 @@ def clean_csv(scopus_file):
     return topic_abs, paper
 
 #===upload file===
-uploaded_file = st.file_uploader("Choose a file")
+uploaded_file = st.file_uploader("Choose a file", on_change=reset_data())
 if uploaded_file is not None:
-    #st.cache_data.clear()
     method = st.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm','BERTopic'))
