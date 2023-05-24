@@ -51,8 +51,8 @@ def reset_data():
      
 #===clean csv===
 @st.cache_data(ttl=2*3600)
-def clean_csv(scopus_file):
-    papers = pd.read_csv(scopus_file)
+def clean_csv():
+    papers = pd.read_csv(uploaded_file)
     paper = papers.dropna(subset=['Abstract'])
     paper = paper[~paper.Abstract.str.contains("No abstract available")]
     paper = paper[~paper.Abstract.str.contains("STRAIT")]
