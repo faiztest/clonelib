@@ -112,29 +112,39 @@ if uploaded_file is not None:
     with col1:
         supp = st.slider(
             'Select value of Support',
-            0.001, 1.000, (0.010))
+            0.001, 1.000, (0.010), on_change=reset_resource)
     with col2:
         conf = st.slider(
             'Select value of Confidence',
-            0.001, 1.000, (0.050))
+            0.001, 1.000, (0.050), on_change=reset_resource)
     with col3:
         maxlen = st.slider(
             'Maximum length of the itemsets generated',
-            2, 8, (2))
+            2, 8, (2), on_change=reset_resource)
 
     tab1, tab2 = st.tabs(["📈 Result & Generate visualization", "📓 Recommended Reading"])
     
     with tab1:
         #===Association rules===
-        freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
+        @st.cache_resource(ttl=3600)
+        def freqitem():
+            freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
+            return freq_item
+        
+        @st.cache_resource(ttl=3600)
+        def arm_table():
+            res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
+            res = res[['antecedents', 'consequents', 'antecedents support', 'consequents support', 'support', 'confidence', 'lift', 'conviction']]
+            res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+
+        freq_item = freqitem()
+
         if freq_item.empty:
-              st.error('Please lower your value.', icon="🚨")
+            st.error('Please lower your value.', icon="🚨")
         else:
-             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
-             #res = res[['antecedents', 'consequents', 'support', 'confidence', 'lift']]
-             res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-             st.dataframe(res, use_container_width=True)
+            res = arm_table()
+            st.dataframe(res, use_container_width=True)
                    
              #===visualize===
                 
