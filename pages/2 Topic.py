@@ -49,8 +49,9 @@ def reset_data():
      st.cache_resource.clear()
      
 #===clean csv===
-@st.cache_resource(ttl=2*3600)
+@st.cache_data(ttl=2*3600)
 def clean_csv():
+    global topic_abs, paper
     papers = pd.read_csv(uploaded_file)
     paper = papers.dropna(subset=['Abstract'])
     paper = paper[~paper.Abstract.str.contains("No abstract available")]
@@ -85,8 +86,8 @@ if uploaded_file is not None:
         
     #===topic===
     if method == 'Choose...':
-        st.write(topic_abs)
-        
+        st.write('')
+
     elif method is 'pyLDA':
          topic_abs = [t.split(' ') for t in topic_abs]
          id2word = Dictionary(topic_abs)
