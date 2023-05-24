@@ -86,7 +86,7 @@ if uploaded_file is not None:
         
     #===topic===
     if method == 'Choose...':
-        st.write('topic_abs')
+        st.write(topic_abs)
 
     elif method is 'pyLDA':
          topic_abs_LDA = [t.split(' ') for t in topic_abs]
