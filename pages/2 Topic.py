@@ -116,19 +116,14 @@ if uploaded_file is not None:
          with tab1:
          #===visualization===
              with st.spinner('Calculating and Creating pyLDAvis Visualization ...'):
-                 lda_model, topic_abs_LDA, id2word = pylda()
-                 @st.cache_resource(ttl=3600)
-                 def pylda():
-                    coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
-                    coherence_lda = coherence_model_lda.get_coherence()
-                    vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
-                    py_lda_vis_html = pyLDAvis.prepared_data_to_html(vis)
-                    return coherence_lda, py_lda_vis_html
-                 
-                 coherence_lda, py_lda_vis_html = pylda()
-                 st.write('Score: ', (coherence_lda))
-                 components.html(py_lda_vis_html, width=1700, height=800)
-                 st.markdown('Copyright (c) 2015, Ben Mabey. https://github.com/bmabey/pyLDAvis')
+              lda_model, topic_abs_LDA, id2word = pylda()
+              coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
+              coherence_lda = coherence_model_lda.get_coherence()
+              vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
+              py_lda_vis_html = pyLDAvis.prepared_data_to_html(vis)
+              st.write('Score: ', (coherence_lda))
+              components.html(py_lda_vis_html, width=1700, height=800)
+              st.markdown('Copyright (c) 2015, Ben Mabey. https://github.com/bmabey/pyLDAvis')
 
          with tab2:
              st.markdown('**Sievert, C., & Shirley, K. (2014). LDAvis: A method for visualizing and interpreting topics. Proceedings of the Workshop on Interactive Language Learning, Visualization, and Interfaces.** https://doi.org/10.3115/v1/w14-3110')
