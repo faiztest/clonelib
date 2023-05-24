@@ -34,7 +34,7 @@ def reset_resource():
      st.cache_resource.clear()
 
 #===Read data===
-uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data])
+uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
 if uploaded_file is not None:
     @st.cache_data(ttl=3600)
     def get_data_arul():
