@@ -29,6 +29,9 @@ st.subheader('Put your CSV file here ...')
 def reset_data():
      st.cache_data.clear()
 
+def reset_resource():
+     st.cache_resource.clear()
+
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
 if uploaded_file is not None:
@@ -91,11 +94,13 @@ if uploaded_file is not None:
     else:
         arul = stem_arul()
     
-    arule = arul[keyword].str.split(' ; ')
-    arule_list = arule.values.tolist()
-         
-    te_ary = te.fit(arule_list).transform(arule_list)
-    df = pd.DataFrame(te_ary, columns=te.columns_)
+    @st.cache_data(ttl=3600)
+    def arm():
+        arule = arul[keyword].str.split(' ; ')
+        arule_list = arule.values.tolist()  
+        te_ary = te.fit(arule_list).transform(arule_list)
+        df = pd.DataFrame(te_ary, columns=te.columns_)
+        return df
     
     col1, col2, col3 = st.columns(3)
     with col1:
