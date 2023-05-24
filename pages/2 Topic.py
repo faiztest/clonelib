@@ -39,12 +39,6 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your CSV file here ...')
 
-#===optimize Biterm===
-@st.cache_resource(ttl=3600)
-def biterm_topic():
-     topics_coords = tmp.prepare_coords(model)
-     return topics_coords
-
 def reset_resource():
      st.cache_resource.clear()
 
@@ -139,20 +133,26 @@ if uploaded_file is not None:
      #===Biterm===
     elif method is 'Biterm':
         num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_resource)     
-        X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
-        tf = np.array(X.sum(axis=0)).ravel()
-        docs_vec = btm.get_vectorized_docs(topic_abs, vocabulary)
-        docs_lens = list(map(len, docs_vec))
-        biterms = btm.get_biterms(docs_vec)
-        model = btm.BTM(
-          X, vocabulary, seed=12321, T=num_bitopic, M=20, alpha=50/8, beta=0.01)
-        model.fit(biterms, iterations=20)
-        p_zd = model.transform(docs_vec)
-        coherence = model.coherence_
-        phi = tmp.get_phi(model)
+        #===optimize Biterm===
+        @st.cache_resource(ttl=3600)
+        def biterm_topic():
+            X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
+            tf = np.array(X.sum(axis=0)).ravel()
+            docs_vec = btm.get_vectorized_docs(topic_abs, vocabulary)
+            docs_lens = list(map(len, docs_vec))
+            biterms = btm.get_biterms(docs_vec)
+            model = btm.BTM(
+              X, vocabulary, seed=12321, T=num_bitopic, M=20, alpha=50/8, beta=0.01)
+            model.fit(biterms, iterations=20)
+            p_zd = model.transform(docs_vec)
+            coherence = model.coherence_
+            phi = tmp.get_phi(model)
+            topics_coords = tmp.prepare_coords(model)
+            return topics_coords, phi
+
         try:
-          topik = biterm_topic()
-          totaltop = topik.label.values.tolist()
+          topics_coords, phi = biterm_topic()
+          totaltop = topics_coords.label.values.tolist()
           with st.spinner('Visualizing, please wait ....'):          
              tab1, tab2, tab3 = st.tabs(["📈 Generate visualization", "📃 Reference", "📓 Recommended Reading"])
              with tab1:
@@ -161,7 +161,7 @@ if uploaded_file is not None:
                     num_bitopic_vis = st.selectbox(
                          'Choose topic',
                          (totaltop))
-                    btmvis_coords = tmp.plot_scatter_topics(topik, size_col='size', label_col='label', topic=num_bitopic_vis)
+                    btmvis_coords = tmp.plot_scatter_topics(topics_coords, size_col='size', label_col='label', topic=num_bitopic_vis)
                     st.altair_chart(btmvis_coords, use_container_width=True)
                   with col2:
                     terms_probs = tmp.calc_terms_probs_ratio(phi, topic=num_bitopic_vis, lambda_=1)
