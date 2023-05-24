@@ -40,7 +40,7 @@ st.header("Topic Modeling")
 st.subheader('Put your CSV file here ...')
 
 #===optimize Biterm===
-@st.cache_resource(ttl=2*3600)
+@st.cache_resource(ttl=3600)
 def biterm_topic():
      topics_coords = tmp.prepare_coords(model)
      return topics_coords
@@ -52,7 +52,7 @@ def reset_data():
      st.cache_data.clear()
      
 #===clean csv===
-@st.cache_data(ttl=2*3600)
+@st.cache_data(ttl=3600)
 def clean_csv(scopus_file):
     papers = pd.read_csv(scopus_file)
     paper = papers.dropna(subset=['Abstract'])
@@ -92,33 +92,41 @@ if uploaded_file is not None:
         st.write('')
 
     elif method is 'pyLDA':
-         topic_abs_LDA = [t.split(' ') for t in topic_abs]
-         id2word = Dictionary(topic_abs_LDA)
-         corpus = [id2word.doc2bow(text) for text in topic_abs_LDA]
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_resource)
+         @st.cache_resource(ttl=3600)
+         def pylda():
+            topic_abs_LDA = [t.split(' ') for t in topic_abs]
+            id2word = Dictionary(topic_abs_LDA)
+            corpus = [id2word.doc2bow(text) for text in topic_abs_LDA]
+            #===LDA===
+            lda_model = LdaModel(corpus=corpus,
+                        id2word=id2word,
+                        num_topics=num_topic, 
+                        random_state=0,
+                        chunksize=100,
+                        alpha='auto',
+                        per_word_topics=True)
 
-         #===LDA===
-         lda_model = LdaModel(corpus=corpus,
-                     id2word=id2word,
-                     num_topics=num_topic, 
-                     random_state=0,
-                     chunksize=100,
-                     alpha='auto',
-                     per_word_topics=True)
-
-         pprint(lda_model.print_topics())
-         doc_lda = lda_model[corpus]
-
+            pprint(lda_model.print_topics())
+            doc_lda = lda_model[corpus]
+            return lda_model, topic_abs_LDA, id2word
+         
          tab1, tab2, tab3 = st.tabs(["📈 Generate visualization & Calculate coherence", "📃 Reference", "📓 Recommended Reading"])
 
          with tab1:
          #===visualization===
              with st.spinner('Calculating and Creating pyLDAvis Visualization ...'):
-                 coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
-                 coherence_lda = coherence_model_lda.get_coherence()
+                 lda_model, topic_abs_LDA, id2word = pylda()
+                 @st.cache_resource(ttl=3600)
+                 def pylda():
+                    coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
+                    coherence_lda = coherence_model_lda.get_coherence()
+                    vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
+                    py_lda_vis_html = pyLDAvis.prepared_data_to_html(vis)
+                    return coherence_lda, py_lda_vis_html
+                 
+                 coherence_lda, py_lda_vis_html = pylda()
                  st.write('Score: ', (coherence_lda))
-                 vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
-                 py_lda_vis_html = pyLDAvis.prepared_data_to_html(vis)
                  components.html(py_lda_vis_html, width=1700, height=800)
                  st.markdown('Copyright (c) 2015, Ben Mabey. https://github.com/bmabey/pyLDAvis')
 
