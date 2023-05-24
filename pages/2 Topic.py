@@ -109,18 +109,20 @@ if uploaded_file is not None:
 
             pprint(lda_model.print_topics())
             doc_lda = lda_model[corpus]
-            return lda_model, topic_abs_LDA, id2word, corpus
+
+            #===visualization===
+            coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
+            coherence_lda = coherence_model_lda.get_coherence()
+            vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
+            py_lda_vis_html = pyLDAvis.prepared_data_to_html(vis)
+            return py_lda_vis_html, coherence_lda
          
          tab1, tab2, tab3 = st.tabs(["📈 Generate visualization & Calculate coherence", "📃 Reference", "📓 Recommended Reading"])
 
          with tab1:
          #===visualization===
              with st.spinner('Calculating and Creating pyLDAvis Visualization ...'):
-              lda_model, topic_abs_LDA, id2word, corpus = pylda()
-              coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
-              coherence_lda = coherence_model_lda.get_coherence()
-              vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
-              py_lda_vis_html = pyLDAvis.prepared_data_to_html(vis)
+              py_lda_vis_html, coherence_lda = pylda()
               st.write('Score: ', (coherence_lda))
               components.html(py_lda_vis_html, width=1700, height=800)
               st.markdown('Copyright (c) 2015, Ben Mabey. https://github.com/bmabey/pyLDAvis')
