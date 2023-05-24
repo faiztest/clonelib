@@ -78,7 +78,7 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].apply(lemmatize_words)
         key['new'] = key['new'].apply(lemmatize_words)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
-        key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
+        #key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
         return keywords, key
                 
      @st.cache_data(ttl=3600)
@@ -91,7 +91,7 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].apply(stem_words)
         key['new'] = key['new'].apply(stem_words)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
-        key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
+        #key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
         return keywords, key
      
      keywords, key = clean_keyword() 
