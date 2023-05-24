@@ -126,13 +126,13 @@ if uploaded_file is not None:
     
     with tab1:
         #===Association rules===
-        @st.cache_resource(ttl=3600)
+        #@st.cache_resource(ttl=3600)
         def freqitem():
             global supp, maxlen
             freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
             return freq_item
         
-        @st.cache_resource(ttl=3600)
+        #@st.cache_resource(ttl=3600)
         def arm_table():
             global conf
             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
