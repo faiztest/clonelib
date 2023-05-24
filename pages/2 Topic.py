@@ -81,10 +81,13 @@ if uploaded_file is not None:
     clean_csv()
     method = st.selectbox(
             'Choose method',
-            ('pyLDA', 'Biterm','BERTopic'))
+            ('Choose...', 'pyLDA', 'Biterm','BERTopic'))
         
     #===topic===
-    if method is 'pyLDA':
+    if method == 'Choose...':
+        st.write(topic_abs)
+        
+    elif method is 'pyLDA':
          topic_abs = [t.split(' ') for t in topic_abs]
          id2word = Dictionary(topic_abs)
          corpus = [id2word.doc2bow(text) for text in topic_abs]
