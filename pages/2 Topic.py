@@ -148,11 +148,11 @@ if uploaded_file is not None:
             coherence = model.coherence_
             phi = tmp.get_phi(model)
             topics_coords = tmp.prepare_coords(model)
-            return topics_coords, phi
+            totaltop = topics_coords.label.values.tolist()
+            return topics_coords, phi, totaltop
 
         try:
-          topics_coords, phi = biterm_topic()
-          totaltop = topics_coords.label.values.tolist()
+          topics_coords, phi, totaltop = biterm_topic()
           with st.spinner('Visualizing, please wait ....'):          
              tab1, tab2, tab3 = st.tabs(["📈 Generate visualization", "📃 Reference", "📓 Recommended Reading"])
              with tab1:
