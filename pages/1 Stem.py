@@ -29,16 +29,6 @@ def reset_data():
 #===upload===
 uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
 if uploaded_file is not None:  
-     col1, col2 = st.columns(2)
-     with col1:
-        method = st.selectbox(
-             'Choose method',
-           ('Stemming', 'Lemmatization'))
-     with col2:
-        keyword = st.selectbox(
-            'Choose column',
-           (list_of_column_key))
-
      @st.cache_data(ttl=3600)
      def clean_keyword():
         keywords = pd.read_csv(uploaded_file)
@@ -85,13 +75,23 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].apply(stem_words)
         key['new'] = key['new'].apply(stem_words)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
-        return keywords, key
+        return keywords, key, list_of_column_key
      
-     #keywords, key = clean_keyword()
+     keywords, key, list_of_column_key = clean_keyword()
+     col1, col2 = st.columns(2)
+     with col1:
+        method = st.selectbox(
+             'Choose method',
+           ('Stemming', 'Lemmatization'))
+     with col2:
+        keyword = st.selectbox(
+            'Choose column',
+           (list_of_column_key))
+
      if method is 'Lemmatization':
-         keywords, key = clean_keyword().Lemmatization()
+         keywords, key = Lemmatization()
      else:
-         keywords, key = clean_keyword().Stemming()
+         keywords, key = Stemming()
             
      st.write('Congratulations! 🤩 You choose',keyword ,'with',method,'method. Now, you can easily download the result by clicking the button below')
      st.divider()
