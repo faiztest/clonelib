@@ -26,12 +26,20 @@ st.set_page_config(
 st.header("Biderected Keywords Network")
 st.subheader('Put your CSV file here ...')
 
+def reset_data():
+     st.cache_data.clear()
+
 #===Read data===
-uploaded_file = st.file_uploader("Choose a file", type=['csv'])
+uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
 if uploaded_file is not None:
-    papers = pd.read_csv(uploaded_file)
-    list_of_column_key = list(papers.columns)
-    list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
+    @st.cache_data(ttl=3600)
+    def get_data_arul():
+        papers = pd.read_csv(uploaded_file)
+        list_of_column_key = list(papers.columns)
+        list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
+        return papers, list_of_column_key
+     
+    papers, list_of_column_key = get_data_arul()
 
     col1, col2 = st.columns(2)
     with col1:
@@ -45,30 +53,43 @@ if uploaded_file is not None:
 
 
     #===body=== 
-    #papers = pd.read_csv(uploaded_file)
-    arul = papers.dropna(subset=[keyword])
-     
-    arul[keyword] = arul[keyword].map(lambda x: re.sub('-—–', ' ', x))
-    arul[keyword] = arul[keyword].map(lambda x: re.sub('; ', ' ; ', x))
-    arul[keyword] = arul[keyword].map(lambda x: x.lower())
-    arul[keyword] = arul[keyword].dropna()
-        
+    @st.cache_data(ttl=3600)
+    def clean_arul():
+        global keyword, papers
+        arul = papers.dropna(subset=[keyword])
+        arul[keyword] = arul[keyword].map(lambda x: re.sub('-—–', ' ', x))
+        arul[keyword] = arul[keyword].map(lambda x: re.sub('; ', ' ; ', x))
+        arul[keyword] = arul[keyword].map(lambda x: x.lower())
+        arul[keyword] = arul[keyword].dropna()
+        return arul
+
+    arul = clean_arul()   
+
     #===stem/lem===
-    if method is 'Lemmatization':          
+    @st.cache_data(ttl=3600)
+    def lemma_arul():
         lemmatizer = WordNetLemmatizer()
         def lemmatize_words(text):
              words = text.split()
              words = [lemmatizer.lemmatize(word) for word in words]
              return ' '.join(words)
         arul[keyword] = arul[keyword].apply(lemmatize_words)
-             
-    else:
+        return arul
+    
+    @st.cache_data(ttl=3600)
+    def stem_arul():
         stemmer = SnowballStemmer("english")
         def stem_words(text):
             words = text.split()
             words = [stemmer.stem(word) for word in words]
             return ' '.join(words)
         arul[keyword] = arul[keyword].apply(stem_words)
+        return arul
+
+    if method is 'Lemmatization':
+        arul = lemma_arul()
+    else:
+        arul = stem_arul()
     
     arule = arul[keyword].str.split(' ; ')
     arule_list = arule.values.tolist()
@@ -80,11 +101,11 @@ if uploaded_file is not None:
     with col1:
         supp = st.slider(
             'Select value of Support',
-            0.001, 1.000, (0.040))
+            0.001, 1.000, (0.010))
     with col2:
         conf = st.slider(
             'Select value of Confidence',
-            0.001, 1.000, (0.070))
+            0.001, 1.000, (0.050))
     with col3:
         maxlen = st.slider(
             'Maximum length of the itemsets generated',
