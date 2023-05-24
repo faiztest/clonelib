@@ -42,11 +42,11 @@ if uploaded_file is not None:
      with col1:
         method = st.selectbox(
              'Choose method',
-           ('Stemming', 'Lemmatization'))
+           ('Stemming', 'Lemmatization'), on_change=reset_data)
      with col2:
         keyword = st.selectbox(
             'Choose column',
-           (list_of_column_key))
+           (list_of_column_key), on_change=reset_data)
 
      @st.cache_data(ttl=3600)
      def clean_keyword():      
