@@ -30,12 +30,26 @@ def reset_data():
 uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
 if uploaded_file is not None:  
      @st.cache_data(ttl=3600)
-     def clean_keyword():
+     def get_data():
         keywords = pd.read_csv(uploaded_file)
         list_of_column_key = list(keywords.columns)
         list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
-        
-        #===body===
+        return keywords, list_of_column_key
+     
+     keywords, list_of_column_key = get_data()
+     
+     col1, col2 = st.columns(2)
+     with col1:
+        method = st.selectbox(
+             'Choose method',
+           ('Stemming', 'Lemmatization'))
+     with col2:
+        keyword = st.selectbox(
+            'Choose column',
+           (list_of_column_key))
+
+     @st.cache_data(ttl=3600)
+     def clean_keyword():      
         key = keywords[keyword]
         keywords = keywords.replace(np.nan, '', regex=True)
         keywords[keyword] = keywords[keyword].astype(str)
@@ -75,19 +89,10 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].apply(stem_words)
         key['new'] = key['new'].apply(stem_words)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
-        return keywords, key, list_of_column_key
+        return keywords, key
      
-     keywords, key, list_of_column_key = clean_keyword()
-     col1, col2 = st.columns(2)
-     with col1:
-        method = st.selectbox(
-             'Choose method',
-           ('Stemming', 'Lemmatization'))
-     with col2:
-        keyword = st.selectbox(
-            'Choose column',
-           (list_of_column_key))
-
+     keywords, key = clean_keyword()
+     
      if method is 'Lemmatization':
          keywords, key = Lemmatization()
      else:
