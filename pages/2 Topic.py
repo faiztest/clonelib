@@ -80,7 +80,6 @@ def clean_csv(scopus_file):
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
     st.cache_data.clear()
-    clean_csv(uploaded_file)
     method = st.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm','BERTopic'))
@@ -90,6 +89,7 @@ if uploaded_file is not None:
         st.write(topic_abs)
 
     elif method is 'pyLDA':
+         clean_csv(uploaded_file)
          topic_abs_LDA = [t.split(' ') for t in topic_abs]
          id2word = Dictionary(topic_abs_LDA)
          corpus = [id2word.doc2bow(text) for text in topic_abs_LDA]
@@ -131,6 +131,7 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method is 'Biterm':
+        clean_csv(uploaded_file)
         num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_data)     
         X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
         tf = np.array(X.sum(axis=0)).ravel()
@@ -173,6 +174,7 @@ if uploaded_file is not None:
     
      #===BERTopic===
     elif method is 'BERTopic':
+        clean_csv(uploaded_file)
         num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1)
         topic_time = paper.Year.values.tolist()
         cluster_model = KMeans(n_clusters=num_btopic)
