@@ -73,7 +73,7 @@ def clean_csv():
     stop = stopwords.words('english')
     paper['Abstract_stop'] = paper['Abstract_lem'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
     topic_abs = paper.Abstract_stop.values.tolist()
-    return topic_abs
+    return topic_abs, paper
 
 #===upload file===
 uploaded_file = st.file_uploader("Choose a file")
