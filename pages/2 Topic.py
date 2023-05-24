@@ -51,8 +51,8 @@ def reset_data():
      
 #===clean csv===
 @st.cache_data(ttl=2*3600)
-def clean_csv():
-    papers = pd.read_csv(uploaded_file)
+def clean_csv(scopus_file):
+    papers = pd.read_csv(scopus_file)
     paper = papers.dropna(subset=['Abstract'])
     paper = paper[~paper.Abstract.str.contains("No abstract available")]
     paper = paper[~paper.Abstract.str.contains("STRAIT")]
@@ -78,9 +78,9 @@ def clean_csv():
     return topic_abs, paper
 
 #===upload file===
-uploaded_file = st.file_uploader("Choose a file", on_change=clean_csv)
+uploaded_file = st.file_uploader("Choose a file", on_change=reset_data)
 if uploaded_file is not None:
-    #clean_csv(uploaded_file)
+    topic_abs = clean_csv(uploaded_file)
     method = st.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm','BERTopic'))
