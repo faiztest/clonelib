@@ -40,46 +40,51 @@ st.header("Topic Modeling")
 st.subheader('Put your CSV file here ...')
 
 #===optimize Biterm===
-@st.cache_resource(ttl=6*3600)
+@st.cache_resource(ttl=2*3600)
 def biterm_topic():
      topics_coords = tmp.prepare_coords(model)
      return topics_coords
 
 def reset_data():
      st.cache_resource.clear()
-
-#===upload file===
-uploaded_file = st.file_uploader("Choose a file")
-if uploaded_file is not None:
+     
+#===clean csv===
+@st.cache_data(ttl=2*3600)
+def clean_csv():
     papers = pd.read_csv(uploaded_file)
     paper = papers.dropna(subset=['Abstract'])
     paper = paper[~paper.Abstract.str.contains("No abstract available")]
     paper = paper[~paper.Abstract.str.contains("STRAIT")]
-        
-    #===mapping===
+            
+        #===mapping===
     paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!?•-]', '', x))
     paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: x.lower())
     paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('©.*', '', x))
-        
-    #===lemmatize===
+            
+        #===lemmatize===
     lemmatizer = WordNetLemmatizer()
     def lemmatize_words(text):
         words = text.split()
         words = [lemmatizer.lemmatize(word) for word in words]
         return ' '.join(words)
     paper['Abstract_lem'] = paper['Abstract_pre'].apply(lemmatize_words)
-       
-    #===stopword removal===
+        
+        #===stopword removal===
     stop = stopwords.words('english')
     paper['Abstract_stop'] = paper['Abstract_lem'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+    topic_abs = paper.Abstract_stop.values.tolist()
+    return topic_abs
 
+#===upload file===
+uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    clean_csv()
     method = st.selectbox(
             'Choose method',
             ('pyLDA', 'Biterm','BERTopic'))
         
     #===topic===
     if method is 'pyLDA':
-         topic_abs = paper.Abstract_stop.values.tolist()
          topic_abs = [t.split(' ') for t in topic_abs]
          id2word = Dictionary(topic_abs)
          corpus = [id2word.doc2bow(text) for text in topic_abs]
@@ -121,7 +126,6 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method is 'Biterm':
-        topic_abs = paper.Abstract_stop.values.tolist()
         num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_data)
         topic_abs = paper.Abstract_stop.values.tolist()       
         X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
@@ -166,7 +170,6 @@ if uploaded_file is not None:
      #===BERTopic===
     elif method is 'BERTopic':
         num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1)
-        topic_abs = paper.Abstract_stop.values.tolist()
         topic_time = paper.Year.values.tolist()
         cluster_model = KMeans(n_clusters=num_btopic)
         topic_model = BERTopic(hdbscan_model=cluster_model).fit(topic_abs)
