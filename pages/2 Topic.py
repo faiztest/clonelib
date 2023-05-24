@@ -28,6 +28,7 @@ from sklearn.cluster import KMeans
 import bitermplus as btm
 import tmplot as tmp
 import tomotopy
+import sys
 
 
 #===config===
@@ -49,7 +50,11 @@ def reset_data():
 @st.cache_data(ttl=3600)
 def clean_csv(scopus_file):
     papers = pd.read_csv(scopus_file)
-    paper = papers.dropna(subset=['Abstract'])
+    try:
+        paper = papers.dropna(subset=['Abstract'])
+    except KeyError:
+        st.error('Error: Please check your Abstract column.')
+        sys.exit(1)
     paper = paper[~paper.Abstract.str.contains("No abstract available")]
     paper = paper[~paper.Abstract.str.contains("STRAIT")]
             
