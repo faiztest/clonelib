@@ -141,6 +141,7 @@ if uploaded_file is not None:
             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
 
         freq_item = freqitem()
+        st.write(freq_item)
 
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
