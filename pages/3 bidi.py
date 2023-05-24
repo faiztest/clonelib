@@ -156,20 +156,21 @@ if uploaded_file is not None:
                 with st.spinner('Visualizing, please wait ....'): 
                      @st.cache_resource(ttl=3600)
                      def map_node():
-                         res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
-                         res_node=pd.concat([res['antecedents'],res['consequents']])
-                         res_node = res_node.drop_duplicates(keep='first')
-                         return res_node, res
+                        res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
+                        res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
+                        res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) #[['consequents','consequent support']]
+                        res_node = pd.concat([res_ant, res_con]).drop_duplicates(keep='first')
+                        return res_node, res
                      
                      res_node, res = map_node()
 
                      nodes = []
                      edges = []
 
-                     for x in res_node:
+                     for w,x in zip(res_node['size'], res_node['node']):
                          nodes.append( Node(id=x, 
                                         label=x,
-                                        size=10,
+                                        size=10*w,
                                         shape="circularImage",
                                         labelHighlightBold=True,
                                         group=x,
