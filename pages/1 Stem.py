@@ -51,7 +51,10 @@ if uploaded_file is not None:
      @st.cache_data(ttl=3600)
      def clean_keyword():      
         global keyword, keywords
-        key = keywords[keyword]
+        try:
+            key = keywords[keyword]
+        except KeyError:
+            st.error('Error: Please check your Author/Index Keywords column.')
         keywords = keywords.replace(np.nan, '', regex=True)
         keywords[keyword] = keywords[keyword].astype(str)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub('-', ' ', x))
