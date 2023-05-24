@@ -121,10 +121,10 @@ if uploaded_file is not None:
      with tab2:
          @st.cache_data(ttl=3600)
          def table_keyword():
-             key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
-             return key
-         key = table_keyword()
-         st.dataframe(key, use_container_width=True)
+             keytab = key.drop(['index'], axis=1).rename(columns={0: 'old'})
+             return keytab
+         keytab = table_keyword()
+         st.dataframe(keytab, use_container_width=True)
                   
          @st.cache_data(ttl=3600)
          def convert_dfs(df):
