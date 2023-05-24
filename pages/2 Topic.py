@@ -180,42 +180,76 @@ if uploaded_file is not None:
     
      #===BERTopic===
     elif method is 'BERTopic':
-        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1)
-        topic_time = paper.Year.values.tolist()
-        cluster_model = KMeans(n_clusters=num_btopic)
-        topic_model = BERTopic(hdbscan_model=cluster_model).fit(topic_abs)
-        topics, probs = topic_model.fit_transform(topic_abs)
+        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_resource)
+        @st.cache_resource(ttl=3600)
+        def bertopic_vis():
+          topic_time = paper.Year.values.tolist()
+          cluster_model = KMeans(n_clusters=num_btopic)
+          topic_model = BERTopic(hdbscan_model=cluster_model).fit(topic_abs)
+          topics, probs = topic_model.fit_transform(topic_abs)
+          return topic_model, topics, probs
+        
+        @st.cache_resource(ttl=3600)
+        def Vis_Topics():
+          fig1 = topic_model.visualize_topics()
+          return fig1
+        
+        @st.cache_resource(ttl=3600)
+        def Vis_Documents():
+          fig2 = topic_model.visualize_documents(topic_abs)
+          return fig2
+
+        @st.cache_resource(ttl=3600)
+        def Vis_Hierarchy():
+          fig3 = topic_model.visualize_hierarchy(top_n_topics=num_btopic)
+          return fig3
+    
+        @st.cache_resource(ttl=3600)
+        def Vis_Heatmap():
+          fig4 = topic_model.visualize_heatmap(n_clusters=num_btopic-1, width=1000, height=1000)
+          return fig4
+
+        @st.cache_resource(ttl=3600)
+        def Vis_Barchart():
+          fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic)
+          return fig5
+    
+        @st.cache_resource(ttl=3600)
+        def Vis_ToT():
+          topics_over_time = topic_model.topics_over_time(topic_abs, topic_time)
+          fig6 = topic_model.visualize_topics_over_time(topics_over_time)
+          return fig6
         
         tab1, tab2, tab3 = st.tabs(["📈 Generate visualization", "📃 Reference", "📓 Recommended Reading"])
         with tab1:
+          topic_model, topics, probs = bertopic_vis()
           #===visualization===
           viz = st.selectbox(
             'Choose visualization',
             ('Visualize Topics', 'Visualize Documents', 'Visualize Document Hierarchy', 'Visualize Topic Similarity', 'Visualize Terms', 'Visualize Topics over Time'))
 
           if viz == 'Visualize Topics':
-                 fig1 = topic_model.visualize_topics()
+                 fig1 = Vis_Topics()
                  st.write(fig1)
 
           elif viz == 'Visualize Documents':
-                 fig2 = topic_model.visualize_documents(topic_abs)
+                 fig2 = Vis_Documents()
                  st.write(fig2)
 
           elif viz == 'Visualize Document Hierarchy':
-                 fig3 = topic_model.visualize_hierarchy(top_n_topics=num_btopic)
+                 fig3 = Vis_Hierarchy()
                  st.write(fig3)
 
           elif viz == 'Visualize Topic Similarity':
-                 fig4 = topic_model.visualize_heatmap(n_clusters=num_btopic-1, width=1000, height=1000)
+                 fig4 = Vis_Heatmap
                  st.write(fig4)
 
           elif viz == 'Visualize Terms':
-                 fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic)
+                 fig5 = Vis_Barchart()
                  st.write(fig5)
 
           elif viz == 'Visualize Topics over Time':
-                 topics_over_time = topic_model.topics_over_time(topic_abs, topic_time)
-                 fig6 = topic_model.visualize_topics_over_time(topics_over_time)
+                 fig6 = Vis_ToT()
                  st.write(fig6)
                     
         with tab2:
