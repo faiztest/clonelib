@@ -109,14 +109,14 @@ if uploaded_file is not None:
 
             pprint(lda_model.print_topics())
             doc_lda = lda_model[corpus]
-            return lda_model, topic_abs_LDA, id2word
+            return lda_model, topic_abs_LDA, id2word, corpus
          
          tab1, tab2, tab3 = st.tabs(["📈 Generate visualization & Calculate coherence", "📃 Reference", "📓 Recommended Reading"])
 
          with tab1:
          #===visualization===
              with st.spinner('Calculating and Creating pyLDAvis Visualization ...'):
-              lda_model, topic_abs_LDA, id2word = pylda()
+              lda_model, topic_abs_LDA, id2word, corpus = pylda()
               coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
               coherence_lda = coherence_model_lda.get_coherence()
               vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
