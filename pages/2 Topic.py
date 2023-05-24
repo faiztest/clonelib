@@ -57,7 +57,7 @@ def clean_csv(scopus_file):
     paper = paper[~paper.Abstract.str.contains("STRAIT")]
             
         #===mapping===
-    paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!?•-]', '', x))
+    paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!?•-><=]', '', x))
     paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: x.lower())
     paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('©.*', '', x))
             
