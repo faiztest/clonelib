@@ -16,6 +16,7 @@ from nltk.stem import WordNetLemmatizer
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
+import sys
 
 #===config===
 st.set_page_config(
@@ -59,7 +60,11 @@ if uploaded_file is not None:
     @st.cache_data(ttl=3600)
     def clean_arul():
         global keyword, papers
-        arul = papers.dropna(subset=[keyword])
+        try:
+            arul = papers.dropna(subset=[keyword])
+        except KeyError:
+            st.error('Error: Please check your Author/Index Keywords column.')
+            sys.exit(1)
         arul[keyword] = arul[keyword].map(lambda x: re.sub('-—–', ' ', x))
         arul[keyword] = arul[keyword].map(lambda x: re.sub('; ', ' ; ', x))
         arul[keyword] = arul[keyword].map(lambda x: x.lower())
@@ -101,7 +106,8 @@ if uploaded_file is not None:
         te_ary = te.fit(arule_list).transform(arule_list)
         df = pd.DataFrame(te_ary, columns=te.columns_)
         return df
-    
+    df = arm()
+
     col1, col2, col3 = st.columns(3)
     with col1:
         supp = st.slider(
