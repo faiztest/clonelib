@@ -170,7 +170,7 @@ if uploaded_file is not None:
                      for w,x in zip(res_node['size'], res_node['node']):
                          nodes.append( Node(id=x, 
                                         label=x,
-                                        size=10*w,
+                                        size=1000*w,
                                         shape="circularImage",
                                         labelHighlightBold=True,
                                         group=x,
