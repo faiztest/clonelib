@@ -78,7 +78,7 @@ def clean_csv():
     return topic_abs, paper
 
 #===upload file===
-uploaded_file = st.file_uploader("Choose a file", on_change=reset_data, clean_csv)
+uploaded_file = st.file_uploader("Choose a file", on_change=clean_csv)
 if uploaded_file is not None:
     #clean_csv(uploaded_file)
     method = st.selectbox(
