@@ -23,13 +23,12 @@ st.set_page_config(
 st.header("Keywords Stem")
 st.subheader('Put your CSV file and choose method')
 
+def reset_data():
+     st.cache_data.clear()
+
 #===upload===
-uploaded_file = st.file_uploader("Choose your a file", type=['csv'])
-if uploaded_file is not None:
-     keywords = pd.read_csv(uploaded_file)
-     list_of_column_key = list(keywords.columns)
-     list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
-     
+uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
+if uploaded_file is not None:  
      col1, col2 = st.columns(2)
      with col1:
         method = st.selectbox(
@@ -40,32 +39,44 @@ if uploaded_file is not None:
             'Choose column',
            (list_of_column_key))
 
-     #===body===
-     key = keywords[keyword]
-     keywords = keywords.replace(np.nan, '', regex=True)
-     keywords[keyword] = keywords[keyword].astype(str)
-     keywords[keyword] = keywords[keyword].map(lambda x: re.sub('-', ' ', x))
-     keywords[keyword] = keywords[keyword].map(lambda x: re.sub('; ', ' ; ', x))
-     keywords[keyword] = keywords[keyword].map(lambda x: x.lower())
+     @st.cache_data(ttl=3600)
+     def clean_keyword():
+        keywords = pd.read_csv(uploaded_file)
+        list_of_column_key = list(keywords.columns)
+        list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
+        
+        #===body===
+        key = keywords[keyword]
+        keywords = keywords.replace(np.nan, '', regex=True)
+        keywords[keyword] = keywords[keyword].astype(str)
+        keywords[keyword] = keywords[keyword].map(lambda x: re.sub('-', ' ', x))
+        keywords[keyword] = keywords[keyword].map(lambda x: re.sub('; ', ' ; ', x))
+        keywords[keyword] = keywords[keyword].map(lambda x: x.lower())
+        
+        #===Keywords list===
+        key = key.dropna()
+        key = pd.concat([key.str.split('; ', expand=True)], axis=1)
+        key = pd.Series(np.ravel(key)).dropna().drop_duplicates().sort_values().reset_index()
+        key[0] = key[0].map(lambda x: re.sub('-', ' ', x))
+        key['new']=key[0].map(lambda x: x.lower())
+
+        return keywords, key
      
-     #===Keywords list===
-     key = key.dropna()
-     key = pd.concat([key.str.split('; ', expand=True)], axis=1)
-     key = pd.Series(np.ravel(key)).dropna().drop_duplicates().sort_values().reset_index()
-     key[0] = key[0].map(lambda x: re.sub('-', ' ', x))
-     key['new']=key[0].map(lambda x: x.lower())
-                
      #===stem/lem===
-     if method is 'Lemmatization':          
+     @st.cache_data(ttl=3600)
+     def Lemmatization():
         lemmatizer = WordNetLemmatizer()
         def lemmatize_words(text):
-             words = text.split()
-             words = [lemmatizer.lemmatize(word) for word in words]
-             return ' '.join(words)
+            words = text.split()
+            words = [lemmatizer.lemmatize(word) for word in words]
+            return ' '.join(words)
         keywords[keyword] = keywords[keyword].apply(lemmatize_words)
         key['new'] = key['new'].apply(lemmatize_words)
-             
-     else:
+        keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
+        return keywords, key
+                
+     @st.cache_data(ttl=3600)
+     def Stemming():
         stemmer = SnowballStemmer("english")
         def stem_words(text):
             words = text.split()
@@ -73,8 +84,15 @@ if uploaded_file is not None:
             return ' '.join(words)
         keywords[keyword] = keywords[keyword].apply(stem_words)
         key['new'] = key['new'].apply(stem_words)
+        keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
+        return keywords, key
      
-     keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
+     #keywords, key = clean_keyword()
+     if method is 'Lemmatization':
+         keywords, key = clean_keyword().Lemmatization()
+     else:
+         keywords, key = clean_keyword().Stemming()
+            
      st.write('Congratulations! 🤩 You choose',keyword ,'with',method,'method. Now, you can easily download the result by clicking the button below')
      st.divider()
           
