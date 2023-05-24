@@ -74,7 +74,7 @@ def clean_csv():
     stop = stopwords.words('english')
     paper['Abstract_stop'] = paper['Abstract_lem'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
     topic_abs = paper.Abstract_stop.values.tolist()
-    return topic_abs, paper
+    return topic_abs, papers
 
 #===upload file===
 uploaded_file = st.file_uploader("Choose a file")
@@ -86,7 +86,7 @@ if uploaded_file is not None:
         
     #===topic===
     if method == 'Choose...':
-        st.write(paper)
+        st.write(papers)
 
     elif method is 'pyLDA':
          topic_abs_LDA = [t.split(' ') for t in topic_abs]
