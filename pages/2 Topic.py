@@ -49,7 +49,7 @@ def reset_data():
      st.cache_resource.clear()
      
 #===clean csv===
-@st.cache_data(ttl=2*3600)
+@st.cache_resource(ttl=2*3600)
 def clean_csv():
     papers = pd.read_csv(uploaded_file)
     paper = papers.dropna(subset=['Abstract'])
