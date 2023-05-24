@@ -45,8 +45,10 @@ def biterm_topic():
      topics_coords = tmp.prepare_coords(model)
      return topics_coords
 
-def reset_data():
+def reset_resource():
      st.cache_resource.clear()
+
+def reset_data():
      st.cache_data.clear()
      
 #===clean csv===
@@ -131,7 +133,7 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method is 'Biterm':
-        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_data)     
+        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_resource)     
         X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
         tf = np.array(X.sum(axis=0)).ravel()
         docs_vec = btm.get_vectorized_docs(topic_abs, vocabulary)
