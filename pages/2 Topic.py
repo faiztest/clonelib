@@ -74,7 +74,7 @@ def clean_csv(scopus_file):
     paper['Abstract_stop'] = paper['Abstract_lem'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
     global topic_abs
     topic_abs = paper.Abstract_stop.values.tolist()
-    return topic_abs
+    return topic_abs, paper
 
 #===upload file===
 uploaded_file = st.file_uploader("Choose a file")
@@ -131,8 +131,7 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method is 'Biterm':
-        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_data)
-        topic_abs = paper.Abstract_stop.values.tolist()       
+        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_data)     
         X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
         tf = np.array(X.sum(axis=0)).ravel()
         docs_vec = btm.get_vectorized_docs(topic_abs, vocabulary)
