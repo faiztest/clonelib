@@ -92,7 +92,7 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
         return keywords, key
      
-     keywords, key = clean_keyword()
+     keywords, key = clean_keyword() 
      
      if method is 'Lemmatization':
          keywords, key = Lemmatization()
