@@ -86,7 +86,7 @@ if uploaded_file is not None:
         
     #===topic===
     if method == 'Choose...':
-        st.write(topic_abs)
+        st.write('')
 
     elif method is 'pyLDA':
          clean_csv(uploaded_file)
