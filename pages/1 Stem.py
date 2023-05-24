@@ -78,6 +78,7 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].apply(lemmatize_words)
         key['new'] = key['new'].apply(lemmatize_words)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
+        key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
         return keywords, key
                 
      @st.cache_data(ttl=3600)
@@ -90,6 +91,7 @@ if uploaded_file is not None:
         keywords[keyword] = keywords[keyword].apply(stem_words)
         key['new'] = key['new'].apply(stem_words)
         keywords[keyword] = keywords[keyword].map(lambda x: re.sub(' ; ', '; ', x))
+        key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
         return keywords, key
      
      keywords, key = clean_keyword() 
@@ -107,6 +109,7 @@ if uploaded_file is not None:
      
      with tab1:
          st.dataframe(keywords, use_container_width=True)
+         @st.cache_data(ttl=3600)
          def convert_df(df):
             return df.to_csv(index=False).encode('utf-8')
 
@@ -118,9 +121,9 @@ if uploaded_file is not None:
              "text/csv")
           
      with tab2:
-         key = key.drop(['index'], axis=1).rename(columns={0: 'old'})
          st.dataframe(key, use_container_width=True)
                   
+         @st.cache_data(ttl=3600)
          def convert_dfs(df):
                 return df.to_csv(index=False).encode('utf-8')
 
