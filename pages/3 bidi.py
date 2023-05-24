@@ -136,7 +136,7 @@ if uploaded_file is not None:
         def arm_table():
             global conf, freq_item
             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
-            #res = res[['antecedents', 'consequents', 'antecedents support', 'consequents support', 'support', 'confidence', 'lift', 'conviction']]
+            res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
             res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             return res
