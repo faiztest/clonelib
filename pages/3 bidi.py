@@ -27,14 +27,15 @@ st.set_page_config(
 st.header("Biderected Keywords Network")
 st.subheader('Put your CSV file here ...')
 
-def reset_data():
+def reset_all():
      st.cache_data.clear()
+     st.cache_resource.clear()
 
 def reset_resource():
      st.cache_resource.clear()
 
 #===Read data===
-uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
+uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_all)
 if uploaded_file is not None:
     @st.cache_data(ttl=3600)
     def get_data_arul():
@@ -49,11 +50,11 @@ if uploaded_file is not None:
     with col1:
         method = st.selectbox(
              'Choose method',
-           ('Stemming', 'Lemmatization'), on_change=reset_data, reset_resource)
+           ('Stemming', 'Lemmatization'), on_change=reset_all)
     with col2:
         keyword = st.selectbox(
             'Choose column',
-           (list_of_column_key), on_change=reset_data)
+           (list_of_column_key), on_change=reset_all)
 
 
     #===body=== 
