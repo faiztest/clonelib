@@ -86,12 +86,12 @@ if uploaded_file is not None:
         
     #===topic===
     if method == 'Choose...':
-        st.write('')
+        st.write('topic_abs')
 
     elif method is 'pyLDA':
-         topic_abs = [t.split(' ') for t in topic_abs]
-         id2word = Dictionary(topic_abs)
-         corpus = [id2word.doc2bow(text) for text in topic_abs]
+         topic_abs_LDA = [t.split(' ') for t in topic_abs]
+         id2word = Dictionary(topic_abs_LDA)
+         corpus = [id2word.doc2bow(text) for text in topic_abs_LDA]
          num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1)
 
          #===LDA===
@@ -111,7 +111,7 @@ if uploaded_file is not None:
          with tab1:
          #===visualization===
              with st.spinner('Calculating and Creating pyLDAvis Visualization ...'):
-                 coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs, dictionary=id2word, coherence='c_v')
+                 coherence_model_lda = CoherenceModel(model=lda_model, texts=topic_abs_LDA, dictionary=id2word, coherence='c_v')
                  coherence_lda = coherence_model_lda.get_coherence()
                  st.write('Score: ', (coherence_lda))
                  vis = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
