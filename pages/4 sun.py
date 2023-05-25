@@ -14,9 +14,19 @@ st.set_page_config(
 st.header("Data visualization")
 st.subheader('Put your CSV file and choose a visualization')
 
+def reset_data():
+     st.cache_data.clear()
+
+@st.cache_data(ttl=3600)
+def upload(file):
+    uploaded_file = file
+    return uploaded_file
+
 #===body===
-uploaded_file = st.file_uploader("Choose a file", type=['csv'])
+uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
+
 if uploaded_file is not None: 
+    uploaded_file = upload(uploaded_file)
     papers = pd.read_csv(uploaded_file)
     
     tab1, tab2 = st.tabs(["📈 Generate visualization", "📓 Recommended Reading"])

@@ -34,9 +34,17 @@ def reset_all():
 def reset_resource():
      st.cache_resource.clear()
 
+@st.cache_data(ttl=3600)
+def upload(file):
+    uploaded_file = file
+    return uploaded_file
+
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_all)
+
 if uploaded_file is not None:
+    uploaded_file = upload(uploaded_file)
+    
     @st.cache_data(ttl=3600)
     def get_data_arul():
         papers = pd.read_csv(uploaded_file)

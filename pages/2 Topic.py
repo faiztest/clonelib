@@ -79,8 +79,15 @@ def clean_csv(scopus_file):
     return topic_abs, paper
 
 #===upload file===
+@st.cache_data(ttl=3600)
+def upload(file):
+    uploaded_file = file
+    return uploaded_file
+
 uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
+
 if uploaded_file is not None:
+    uploaded_file = upload(uploaded_file)
     topic_abs, paper=clean_csv(uploaded_file)
     method = st.selectbox(
             'Choose method',
