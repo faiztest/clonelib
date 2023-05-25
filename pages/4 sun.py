@@ -27,24 +27,35 @@ uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_
 
 if uploaded_file is not None: 
     uploaded_file = upload(uploaded_file)
-    papers = pd.read_csv(uploaded_file)
+    
+    @st.cache_data(ttl=3600)
+    def get_minmax():
+        papers = pd.read_csv(uploaded_file)
+        MIN = int(papers['Year'].min())
+        MAX = int(papers['Year'].max())
+        GAP = MAX - MIN
+        return papers, MIN, MAX, GAP
     
     tab1, tab2 = st.tabs(["📈 Generate visualization", "📓 Recommended Reading"])
     
     with tab1:    
         #===sunburst===
-     
-        MIN = int(papers['Year'].min())
-        MAX = int(papers['Year'].max())
-        GAP = MAX - MIN
+        papers, MIN, MAX, GAP = get_minmax()
+        
         if (GAP != 0):
             YEAR = st.slider('Year', min_value=MIN, max_value=MAX, value=(MIN, MAX))
         else:
             st.write('You only have data in ', (MAX))
             YEAR = (MIN, MAX)
-        years = list(range(YEAR[0],YEAR[1]+1))
-        papers = papers.loc[papers['Year'].isin(years)]
-        if {'Document Type','Source title','Cited by','Year'}.issubset(papers.columns):
+        
+        @st.cache_data(ttl=3600)
+        def listyear():
+            years = list(range(YEAR[0],YEAR[1]+1))
+            papers = papers.loc[papers['Year'].isin(years)]
+            return years, papers
+        
+        @st.cache_data(ttl=3600)
+        def vis_sunbrust():
             papers['Cited by'] = papers['Cited by'].fillna(0)
             vis = pd.DataFrame()
             vis[['doctype','source','citby','year']] = papers[['Document Type','Source title','Cited by','Year']]
@@ -56,6 +67,12 @@ if uploaded_file is not None:
                           color_continuous_scale='RdBu',
                           color_continuous_midpoint=np.average(viz['cited by'], weights=viz['total docs']))
             fig.update_layout(height=800, width=1200)
+            return fig
+        
+        years, papers = listyear()
+
+        if {'Document Type','Source title','Cited by','Year'}.issubset(papers.columns):
+            fig = vis_sunbrust()
             st.plotly_chart(fig, height=800, width=1200) #use_container_width=True)
         else:
             st.error('We require these columns: Document Type, Source title, Cited by, Year', icon="🚨")
