@@ -30,15 +30,14 @@ def reset_data():
 #===upload===
 @st.cache_data(ttl=3600)
 def upload(file):
-    uploaded_file = uploaded_file
+    uploaded_file = file
     return uploaded_file
 
 uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
-    uploaded_file = upload()
 
 if uploaded_file is not None: 
      uploaded_file = upload(uploaded_file) 
-     
+
      @st.cache_data(ttl=3600)
      def get_data():
         keywords = pd.read_csv(uploaded_file)
