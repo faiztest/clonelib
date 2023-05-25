@@ -50,6 +50,7 @@ if uploaded_file is not None:
         
         @st.cache_data(ttl=3600)
         def listyear():
+            global papers
             years = list(range(YEAR[0],YEAR[1]+1))
             papers = papers.loc[papers['Year'].isin(years)]
             return years, papers
