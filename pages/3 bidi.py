@@ -143,6 +143,7 @@ if uploaded_file is not None:
             return res
 
         freq_item = freqitem()
+        st.write('🚨 The more data you have, the longer you will have to wait.')
 
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
