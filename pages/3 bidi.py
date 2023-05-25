@@ -164,31 +164,35 @@ if uploaded_file is not None:
                      
                      res_node, res = map_node()
 
-                     nodes = []
-                     edges = []
+                     @st.cache_resource(ttl=3600)
+                     def arul_network():
+                        nodes = []
+                        edges = []
 
-                     for w,x in zip(res_node['size'], res_node['node']):
-                         nodes.append( Node(id=x, 
-                                        label=x,
-                                        size=50*w+10,
-                                        shape="circularImage",
-                                        labelHighlightBold=True,
-                                        group=x,
-                                        opacity=10,
-                                        mass=1,
-                                        image="https://upload.wikimedia.org/wikipedia/commons/f/f1/Eo_circle_yellow_circle.svg") 
-                                 )   
+                        for w,x in zip(res_node['size'], res_node['node']):
+                            nodes.append( Node(id=x, 
+                                            label=x,
+                                            size=50*w+10,
+                                            shape="circularImage",
+                                            labelHighlightBold=True,
+                                            group=x,
+                                            opacity=10,
+                                            mass=1,
+                                            image="https://upload.wikimedia.org/wikipedia/commons/f/f1/Eo_circle_yellow_circle.svg") 
+                                    )   
 
-                     for y,z,a,b in zip(res['antecedents'],res['consequents'],res['confidence'],res['to']):
-                         edges.append( Edge(source=y, 
-                                         target=z,
-                                         title=b,
-                                         width=a*2,
-                                         physics=True,
-                                         smooth=True
-                                         ) 
-                                 )  
+                        for y,z,a,b in zip(res['antecedents'],res['consequents'],res['confidence'],res['to']):
+                            edges.append( Edge(source=y, 
+                                            target=z,
+                                            title=b,
+                                            width=a*2,
+                                            physics=True,
+                                            smooth=True
+                                            ) 
+                                    )  
+                        return nodes, edges
 
+                     nodes, edges = arul_network()
                      config = Config(width=1200,
                                      height=800,
                                      directed=True, 
