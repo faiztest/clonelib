@@ -28,9 +28,11 @@ def reset_data():
      st.cache_data.clear()
 
 #===upload===
+uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
+
 @st.cache_data(ttl=3600)
 def upload():
-    uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
+    uploaded_file = uploaded_file
     return uploaded_file
 
 uploaded_file = upload()
