@@ -49,13 +49,19 @@ def conv_bibtex(file):
     papers = df[['keywords', 'abstract', 'journal', 'year', 'times-cited', 'type', 'keywords-plus']]
     return papers
 
+@st.cache_data(ttl=3600)
+def get_ext(file):
+    extype = file.name
+    return extype
+
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'bib'], on_change=reset_all)
 
 if uploaded_file is not None:
-    if uploaded_file.name.endswith('.csv'):
+    extype = get_ext(uploaded_file)
+    if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
-    elif uploaded_file.name.endswith('.bib'):
+    elif extype.endswith('.bib'):
          papers = conv_bibtex(uploaded_file)
     
     @st.cache_data(ttl=3600)
