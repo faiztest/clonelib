@@ -53,9 +53,9 @@ def conv_bibtex(file):
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'bib'], on_change=reset_all)
 
 if uploaded_file is not None:
-    if uploaded_file.endswith('.csv'):
+    if uploaded_file.name.endswith('.csv'):
          papers = upload(uploaded_file) 
-    elif uploaded_file.endswith('.bib'):
+    elif uploaded_file.name.endswith('.bib'):
          papers = conv_bibtex(uploaded_file)
     
     @st.cache_data(ttl=3600)
