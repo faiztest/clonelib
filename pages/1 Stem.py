@@ -36,7 +36,10 @@ def upload(file):
 uploaded_file = st.file_uploader("Choose your a file", type=['csv'], on_change=reset_data)
 
 if uploaded_file is not None: 
-     uploaded_file = upload(uploaded_file) 
+     if uploaded_file.endswith('.csv'):
+         uploaded_file = upload(uploaded_file) 
+     elif uploaded_file.endswith('.bib'):
+         st.write('Bibtex')
 
      @st.cache_data(ttl=3600)
      def get_data():

@@ -17,6 +17,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import sys
+import bibtexparser
 
 #===config===
 st.set_page_config(
@@ -37,17 +38,28 @@ def reset_resource():
 @st.cache_data(ttl=3600)
 def upload(file):
     uploaded_file = file
-    return uploaded_file
+    papers = pd.read_csv(uploaded_file)
+    return papers
+
+@st.cache_data(ttl=3600)
+def conv_bibtex(file):
+    with open(file) as bibtex_file:
+        bib_database = bibtexparser.load(bibtex_file)
+    df = pd.DataFrame(bib_database.entries)
+    papers = df[['keywords', 'abstract', 'journal', 'year', 'times-cited', 'type', 'keywords-plus']]
+    return papers
 
 #===Read data===
-uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_all)
+uploaded_file = st.file_uploader("Choose a file", type=['csv', 'bib'], on_change=reset_all)
 
 if uploaded_file is not None:
-    uploaded_file = upload(uploaded_file)
+    if uploaded_file.endswith('.csv'):
+         papers = upload(uploaded_file) 
+    elif uploaded_file.endswith('.bib'):
+         papers = conv_bibtex(uploaded_file)
     
     @st.cache_data(ttl=3600)
     def get_data_arul():
-        papers = pd.read_csv(uploaded_file)
         list_of_column_key = list(papers.columns)
         list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
         return papers, list_of_column_key
