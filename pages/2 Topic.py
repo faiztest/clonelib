@@ -92,7 +92,7 @@ if uploaded_file is not None:
     topic_abs, paper=clean_csv(uploaded_file)
     method = st.selectbox(
             'Choose method',
-            ('Choose...', 'pyLDA', 'Biterm','BERTopic'))
+            ('Choose...', 'pyLDA', 'Biterm','BERTopic'), on_change=reset_resource)
         
     #===topic===
     if method == 'Choose...':
