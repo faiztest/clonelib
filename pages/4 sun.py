@@ -14,8 +14,9 @@ st.set_page_config(
 st.header("Data visualization")
 st.subheader('Put your CSV file and choose a visualization')
 
-def reset_data():
+def reset_all():
      st.cache_data.clear()
+     st.cache_resource.clear()
 
 @st.cache_data(ttl=3600)
 def upload(file):
@@ -23,7 +24,7 @@ def upload(file):
     return uploaded_file
 
 #===body===
-uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
+uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_all)
 
 if uploaded_file is not None: 
     uploaded_file = upload(uploaded_file)
@@ -48,14 +49,14 @@ if uploaded_file is not None:
             st.write('You only have data in ', (MAX))
             YEAR = (MIN, MAX)
         
-        @st.cache_data(ttl=3600)
-        def listyear():
+        @st.cache_resource(ttl=3600)
+        def listyear(YEAR):
             global papers
             years = list(range(YEAR[0],YEAR[1]+1))
             papers = papers.loc[papers['Year'].isin(years)]
             return years, papers
         
-        @st.cache_data(ttl=3600)
+        @st.cache_resource(ttl=3600)
         def vis_sunbrust():
             papers['Cited by'] = papers['Cited by'].fillna(0)
             vis = pd.DataFrame()

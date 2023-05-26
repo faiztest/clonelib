@@ -43,9 +43,6 @@ st.subheader('Put your CSV file here ...')
 def reset_resource():
      st.cache_resource.clear()
 
-def reset_data():
-     st.cache_data.clear()
-
 def reset_all():
      st.cache_data.clear()
      st.cache_resource.clear()
@@ -101,7 +98,7 @@ if uploaded_file is not None:
     if method == 'Choose...':
         st.write('')
 
-    elif method is 'pyLDA':
+    elif method == 'pyLDA':
          num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_resource)
          @st.cache_resource(ttl=3600)
          def pylda():
@@ -147,7 +144,7 @@ if uploaded_file is not None:
              st.markdown('**Lamba, M., & Madhusudhan, M. (2019, June 7). Mapping of topics in DESIDOC Journal of Library and Information Technology, India: a study. Scientometrics, 120(2), 477–505.** https://doi.org/10.1007/s11192-019-03137-5')
      
      #===Biterm===
-    elif method is 'Biterm':
+    elif method == 'Biterm':
         num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_resource)     
         #===optimize Biterm===
         @st.cache_resource(ttl=3600)
@@ -207,7 +204,7 @@ if uploaded_file is not None:
           st.error('Please raise the number of topics')
     
      #===BERTopic===
-    elif method is 'BERTopic':
+    elif method == 'BERTopic':
         num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_resource)
         @st.cache_resource(ttl=3600)
         def bertopic_vis():
