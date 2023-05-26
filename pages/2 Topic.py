@@ -45,6 +45,10 @@ def reset_resource():
 
 def reset_data():
      st.cache_data.clear()
+
+def reset_all():
+     st.cache_data.clear()
+     st.cache_resource.clear()
      
 #===clean csv===
 @st.cache_data(ttl=3600)
@@ -84,7 +88,7 @@ def upload(file):
     uploaded_file = file
     return uploaded_file
 
-uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_data)
+uploaded_file = st.file_uploader("Choose a file", type=['csv'], on_change=reset_all)
 
 if uploaded_file is not None:
     uploaded_file = upload(uploaded_file)
@@ -262,8 +266,9 @@ if uploaded_file is not None:
                  st.write(fig5)
 
           elif viz == 'Visualize Topics over Time':
-                 fig6 = Vis_ToT()
-                 st.write(fig6)
+                 #fig6 = Vis_ToT()
+                 #st.write(fig6)
+                 st.write(topic_time)
                     
         with tab2:
           st.markdown('**Grootendorst, M. (2022). BERTopic: Neural topic modeling with a class-based TF-IDF procedure. arXiv preprint arXiv:2203.05794.** https://doi.org/10.48550/arXiv.2203.05794')
