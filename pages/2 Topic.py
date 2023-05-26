@@ -199,7 +199,7 @@ if uploaded_file is not None:
           cluster_model = KMeans(n_clusters=num_btopic)
           topic_model = BERTopic(hdbscan_model=cluster_model).fit(topic_abs)
           topics, probs = topic_model.fit_transform(topic_abs)
-          return topic_model, topics, probs
+          return topic_model, topic_time, topics, probs
         
         @st.cache_resource(ttl=3600)
         def Vis_Topics():
@@ -218,6 +218,7 @@ if uploaded_file is not None:
     
         @st.cache_resource(ttl=3600)
         def Vis_Heatmap():
+          global topic_model
           fig4 = topic_model.visualize_heatmap(n_clusters=num_btopic-1, width=1000, height=1000)
           return fig4
 
@@ -234,7 +235,7 @@ if uploaded_file is not None:
         
         tab1, tab2, tab3 = st.tabs(["📈 Generate visualization", "📃 Reference", "📓 Recommended Reading"])
         with tab1:
-          topic_model, topics, probs = bertopic_vis()
+          topic_model, topic_time, topics, probs = bertopic_vis()
           #===visualization===
           viz = st.selectbox(
             'Choose visualization',
