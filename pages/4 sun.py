@@ -18,6 +18,9 @@ def reset_all():
      st.cache_data.clear()
      st.cache_resource.clear()
 
+def reset_resource():
+     st.cache_resource.clear()
+
 @st.cache_data(ttl=3600)
 def upload(file):
     uploaded_file = file
@@ -44,13 +47,13 @@ if uploaded_file is not None:
         papers, MIN, MAX, GAP = get_minmax()
         
         if (GAP != 0):
-            YEAR = st.slider('Year', min_value=MIN, max_value=MAX, value=(MIN, MAX))
+            YEAR = st.slider('Year', min_value=MIN, max_value=MAX, value=(MIN, MAX), on_change=reset_resource)
         else:
             st.write('You only have data in ', (MAX))
             YEAR = (MIN, MAX)
         
         @st.cache_resource(ttl=3600)
-        def listyear(YEAR):
+        def listyear():
             global papers
             years = list(range(YEAR[0],YEAR[1]+1))
             papers = papers.loc[papers['Year'].isin(years)]
