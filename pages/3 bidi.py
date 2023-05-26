@@ -62,7 +62,7 @@ if uploaded_file is not None:
     if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
     elif extype.endswith('.bib'):
-         st.write(uploaded_file)
+         st.write(uploaded_file.name)
          papers = conv_bibtex(uploaded_file)
     
     @st.cache_data(ttl=3600)
