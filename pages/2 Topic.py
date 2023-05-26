@@ -269,6 +269,8 @@ if uploaded_file is not None:
                  #fig6 = Vis_ToT()
                  #st.write(fig6)
                  st.write(topic_time)
+                 st.write(topic_model)
+                 st.write(topic_abs)
                     
         with tab2:
           st.markdown('**Grootendorst, M. (2022). BERTopic: Neural topic modeling with a class-based TF-IDF procedure. arXiv preprint arXiv:2203.05794.** https://doi.org/10.48550/arXiv.2203.05794')
