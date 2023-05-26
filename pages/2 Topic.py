@@ -258,7 +258,7 @@ if uploaded_file is not None:
                  st.write(fig3)
 
           elif viz == 'Visualize Topic Similarity':
-                 fig4 = Vis_Heatmap
+                 fig4 = Vis_Heatmap()
                  st.write(fig4)
 
           elif viz == 'Visualize Terms':
@@ -268,7 +268,7 @@ if uploaded_file is not None:
           elif viz == 'Visualize Topics over Time':
                  fig6 = Vis_ToT()
                  st.write(fig6)
-                        
+
         with tab2:
           st.markdown('**Grootendorst, M. (2022). BERTopic: Neural topic modeling with a class-based TF-IDF procedure. arXiv preprint arXiv:2203.05794.** https://doi.org/10.48550/arXiv.2203.05794')
           
