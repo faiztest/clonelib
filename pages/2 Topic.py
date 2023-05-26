@@ -169,7 +169,7 @@ if uploaded_file is not None:
 
         try:
           topics_coords, phi, totaltop = biterm_topic()
-          with st.spinner('Visualizing, please wait ....'):          
+          #with st.spinner('Visualizing, please wait ....'):          
              tab1, tab2, tab3 = st.tabs(["📈 Generate visualization", "📃 Reference", "📓 Recommended Reading"])
              with tab1:
                   col1, col2 = st.columns(2)
