@@ -18,6 +18,7 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import sys
 import bibtexparser
+import io
 
 #===config===
 st.set_page_config(
@@ -43,7 +44,9 @@ def upload(file):
 
 @st.cache_data(ttl=3600)
 def conv_bibtex(file):
-    with open(file) as bibtex_file:
+    byte_str = file.read()
+    text_obj = byte_str.decode('UTF-8')
+    with open(text_obj) as bibtex_file:
         bib_database = bibtexparser.load(bibtex_file)
     df = pd.DataFrame(bib_database.entries)
     papers = df #[['keywords', 'abstract', 'journal', 'year', 'times-cited', 'type', 'keywords-plus']]
