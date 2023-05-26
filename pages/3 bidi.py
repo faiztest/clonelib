@@ -46,7 +46,7 @@ def conv_bibtex(file):
     with open(file) as bibtex_file:
         bib_database = bibtexparser.load(bibtex_file)
     df = pd.DataFrame(bib_database.entries)
-    papers = df[['keywords', 'abstract', 'journal', 'year', 'times-cited', 'type', 'keywords-plus']]
+    papers = df #[['keywords', 'abstract', 'journal', 'year', 'times-cited', 'type', 'keywords-plus']]
     return papers
 
 @st.cache_data(ttl=3600)
@@ -62,7 +62,7 @@ if uploaded_file is not None:
     if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
     elif extype.endswith('.bib'):
-         st.write(uploaded_file.name)
+         st.write(uploaded_file)
          papers = conv_bibtex(uploaded_file)
     
     @st.cache_data(ttl=3600)
