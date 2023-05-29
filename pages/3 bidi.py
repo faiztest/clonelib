@@ -66,10 +66,8 @@ if uploaded_file is not None:
     extype = get_ext(uploaded_file)
     if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
-         st.write(papers)
     elif extype.endswith('.txt'):
          papers = conv_txt(uploaded_file)
-         st.write(papers)
     
     @st.cache_data(ttl=3600)
     def get_data_arul():
