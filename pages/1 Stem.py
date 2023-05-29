@@ -66,10 +66,12 @@ if uploaded_file is not None:
      extype = get_ext(uploaded_file)
      if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
+         list_of_column_key = get_data()
+         
      elif extype.endswith('.txt'):
          papers = conv_txt(uploaded_file)
+         list_of_column_key = get_data()
      
-     list_of_column_key = get_data()
      col1, col2 = st.columns(2)
      with col1:
         method = st.selectbox(
