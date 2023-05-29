@@ -162,7 +162,7 @@ if uploaded_file is not None:
          
          @st.cache_data(ttl=3600)
          def convert_txt(df):
-             return df.to_csv(index=False, sep='\t').encode('utf-8')
+             return df.to_csv(index=False, sep='\t', lineterminator='\r').encode('utf-8')
          
          if extype.endswith('.csv'):
              csv = convert_df(keywords)
