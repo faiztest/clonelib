@@ -48,6 +48,19 @@ def conv_txt(file):
     keywords.rename(columns=col_dict, inplace=True)
     return keywords
 
+def rev_conv_txt(file):
+    col_dict = {'Title': 'TI',
+            'Source title': 'SO',
+            'Document Type': 'DT',
+            'Author Keywords': 'DE',
+            'Keywords Plus': 'ID',
+            'Abstract': 'AB',
+            'Cited by': 'TC',
+            'Year': 'PY',}
+    keywords = pd.read_csv(file, sep='\t', lineterminator='\r')
+    keywords.rename(columns=col_dict, inplace=True)
+    return keywords
+
 @st.cache_data(ttl=3600)
 def get_ext(file):
     extype = file.name
