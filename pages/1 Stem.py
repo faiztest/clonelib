@@ -24,6 +24,8 @@ st.set_page_config(
 st.header("Keywords Stem")
 st.subheader('Put your CSV file and choose method')
 
+uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
+
 def reset_data():
      st.cache_data.clear()
 
@@ -57,8 +59,6 @@ def get_data():
      list_of_column_key = list(keywords.columns)
      list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
      return keywords, list_of_column_key
-
-uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
      extype = get_ext(uploaded_file)
