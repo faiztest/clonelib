@@ -42,14 +42,14 @@ def upload(file):
 
 @st.cache_data(ttl=3600)
 def conv_txt(file):
-    col_dict = {'TI': 'title',
-            'SO': 'source title',
-            'DT': 'document type',
-            'DE': 'author keywords',
-            'ID': 'keywords plus',
-            'AB': 'abstract',
-            'TC': 'cited by',
-            'PY': 'year',}
+    col_dict = {'TI': 'Title',
+            'SO': 'Source title',
+            'DT': 'Document type',
+            'DE': 'Author keywords',
+            'ID': 'Keywords plus',
+            'AB': 'Abstract',
+            'TC': 'Cited by',
+            'PY': 'Year',}
     papers = pd.read_csv(file, sep='\t', lineterminator='\r')
     papers.rename(columns=col_dict, inplace=True)
     return papers
