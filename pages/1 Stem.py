@@ -24,49 +24,26 @@ st.set_page_config(
 st.header("Keywords Stem")
 st.subheader('Put your CSV file and choose method')
 
-uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
-
 def reset_data():
      st.cache_data.clear()
 
 #===upload===
 @st.cache_data(ttl=3600)
 def upload(file):
-    keywords = pd.read_csv(file)
-    return keywords
+    uploaded_file = file
+    return uploaded_file
 
 @st.cache_data(ttl=3600)
-def conv_txt(file):
-    col_dict = {'TI': 'Title',
-            'SO': 'Source title',
-            'DT': 'Document Type',
-            'DE': 'Author Keywords',
-            'ID': 'Keywords Plus',
-            'AB': 'Abstract',
-            'TC': 'Cited by',
-            'PY': 'Year',}
-    keywords = pd.read_csv(file, sep='\t', lineterminator='\r')
-    keywords.rename(columns=col_dict, inplace=True)
-    return keywords
+     def get_data():
+        keywords = pd.read_csv(uploaded_file)
+        list_of_column_key = list(keywords.columns)
+        list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
+        return keywords, list_of_column_key
 
-@st.cache_data(ttl=3600)
-def get_ext(file):
-    extype = file.name
-    return extype
+uploaded_file = st.file_uploader("Choose your a file", type=['csv','txt'], on_change=reset_data)
 
-@st.cache_data(ttl=3600)
-def get_data():
-     list_of_column_key = list(keywords.columns)
-     list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
-     return keywords, list_of_column_key
-
-if uploaded_file is not None:
-     extype = get_ext(uploaded_file)
-     if extype.endswith('.csv'):
-         papers = upload(uploaded_file) 
-     elif extype.endswith('.txt'):
-         papers = conv_txt(uploaded_file)
-
+if uploaded_file is not None: 
+     uploaded_file = upload(uploaded_file)     
      keywords, list_of_column_key = get_data()
      
      col1, col2 = st.columns(2)
