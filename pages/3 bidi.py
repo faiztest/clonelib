@@ -43,10 +43,10 @@ def upload(file):
 @st.cache_data(ttl=3600)
 def conv_txt(file):
     col_dict = {'TI': 'Title',
-            'SO': 'Source title',
-            'DT': 'Document type',
-            'DE': 'Author keywords',
-            'ID': 'Keywords plus',
+            'SO': 'Source Title',
+            'DT': 'Document Type',
+            'DE': 'Author Keywords',
+            'ID': 'Keywords Plus',
             'AB': 'Abstract',
             'TC': 'Cited by',
             'PY': 'Year',}
