@@ -48,7 +48,7 @@ def conv_txt(file):
     keywords.rename(columns=col_dict, inplace=True)
     return keywords
 
-def rev_conv_txt(file):
+def rev_conv_txt():
     col_dict = {'Title': 'TI',
             'Source title': 'SO',
             'Document Type': 'DT',
@@ -57,7 +57,6 @@ def rev_conv_txt(file):
             'Abstract': 'AB',
             'Cited by': 'TC',
             'Year': 'PY',}
-    keywords = pd.read_csv(file, sep='\t', lineterminator='\r')
     keywords.rename(columns=col_dict, inplace=True)
     return keywords
 
@@ -160,14 +159,28 @@ if uploaded_file is not None:
          @st.cache_data(ttl=3600)
          def convert_df(df):
             return df.to_csv(index=False).encode('utf-8')
-
-         csv = convert_df(keywords)
-         st.download_button(
-             "Press to download result 👈",
-             csv,
-             "scopus.csv",
-             "text/csv")
-          
+         
+         @st.cache_data(ttl=3600)
+         def convert_txt(df):
+             return df.to_csv(index=False, sep='\t').encode('utf-8')
+         
+         if extype.endswith('.csv'):
+             csv = convert_df(keywords)
+             st.download_button(
+                "Press to download result 👈",
+                csv,
+                "scopus.csv",
+                "text/csv")
+  
+         elif extype.endswith('.txt'):
+             keywords = rev_conv_txt()
+             txt = convert_txt(keywords)
+             st.download_button(
+                "Press to download result 👈",
+                txt,
+                "savedrecs.txt",
+                "text/csv")    
+         
      with tab2:
          @st.cache_data(ttl=3600)
          def table_keyword():
@@ -179,8 +192,9 @@ if uploaded_file is not None:
          @st.cache_data(ttl=3600)
          def convert_dfs(df):
              return df.to_csv(index=False).encode('utf-8')
-
+                
          csv = convert_dfs(key)
+
          st.download_button(
              "Press to download keywords 👈",
              csv,
