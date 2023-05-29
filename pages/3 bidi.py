@@ -17,8 +17,6 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import sys
-import bibtexparser
-import io
 
 #===config===
 st.set_page_config(
@@ -43,13 +41,17 @@ def upload(file):
     return papers
 
 @st.cache_data(ttl=3600)
-def conv_bibtex(file):
-    byte_str = file.read()
-    text_obj = byte_str.decode('UTF-8')
-    with open(text_obj) as bibtex_file:
-        bib_database = bibtexparser.load(bibtex_file)
-    df = pd.DataFrame(bib_database.entries)
-    papers = df #[['keywords', 'abstract', 'journal', 'year', 'times-cited', 'type', 'keywords-plus']]
+def conv_txt(file):
+    col_dict = {'TI': 'title',
+            'SO': 'source title',
+            'DT': 'document type',
+            'DE': 'author keywords',
+            'ID': 'keywords plus',
+            'AB': 'abstract',
+            'TC': 'cited by',
+            'PY': 'year',}
+    papers = pd.read_csv(file, sep='\t', lineterminator='\r')
+    papers.rename(columns=col_dict, inplace=True)
     return papers
 
 @st.cache_data(ttl=3600)
@@ -58,15 +60,16 @@ def get_ext(file):
     return extype
 
 #===Read data===
-uploaded_file = st.file_uploader("Choose a file", type=['csv', 'bib'], on_change=reset_all)
+uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
     extype = get_ext(uploaded_file)
     if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
-    elif extype.endswith('.bib'):
-         st.write(uploaded_file)
-         papers = conv_bibtex(uploaded_file)
+         st.write(papers)
+    elif extype.endswith('.txt'):
+         papers = conv_txt(uploaded_file)
+         st.write(papers)
     
     @st.cache_data(ttl=3600)
     def get_data_arul():
