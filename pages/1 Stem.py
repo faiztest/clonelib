@@ -175,7 +175,6 @@ if uploaded_file is not None:
          elif extype.endswith('.txt'):
              keywords = rev_conv_txt()
              txt = convert_txt(keywords)
-             st.write(txt)
              st.download_button(
                 "Press to download result 👈",
                 txt,
