@@ -62,10 +62,10 @@ def get_data():
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
-    extype = get_ext(uploaded_file)
-    if extype.endswith('.csv'):
+     extype = get_ext(uploaded_file)
+     if extype.endswith('.csv'):
          papers = upload(uploaded_file) 
-    elif extype.endswith('.txt'):
+     elif extype.endswith('.txt'):
          papers = conv_txt(uploaded_file)
 
      keywords, list_of_column_key = get_data()
