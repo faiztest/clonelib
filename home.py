@@ -21,6 +21,8 @@ with mt1:
    st.text('')
    st.text('')
    st.text('')
+   st.text('')
+   st.divider()
    st.error("This app works on Scopus's CSV file, Web of Science's Tab delimited file, and custom CSV file.", icon="🚨")
          
 with mt2:
