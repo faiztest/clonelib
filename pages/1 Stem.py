@@ -55,10 +55,9 @@ def get_ext(file):
 
 @st.cache_data(ttl=3600)
 def get_data():
-    global keywords
     list_of_column_key = list(keywords.columns)
     list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
-    return keywords, list_of_column_key
+    return list_of_column_key
 
 uploaded_file = st.file_uploader("Choose your a file", type=['csv','txt'], on_change=reset_data)
 
@@ -69,6 +68,7 @@ if uploaded_file is not None:
      elif extype.endswith('.txt'):
          papers = conv_txt(uploaded_file)
      
+     list_of_column_key = get_data()
      col1, col2 = st.columns(2)
      with col1:
         method = st.selectbox(
