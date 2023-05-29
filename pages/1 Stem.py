@@ -55,6 +55,7 @@ def get_ext(file):
 
 @st.cache_data(ttl=3600)
 def get_data():
+    global keywords
     list_of_column_key = list(keywords.columns)
     list_of_column_key = [k for k in list_of_column_key if 'Keyword' in k]
     return keywords, list_of_column_key
