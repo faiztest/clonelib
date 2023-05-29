@@ -62,20 +62,20 @@ def clean_csv():
     paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!-?•=]', '', x))
     paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: x.lower())
     paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('©.*', '', x))
-            
+          
+         #===stopword removal===
+    stop = stopwords.words('english')
+    paper['Abstract_stop'] = paper['Abstract_pre'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+     
         #===lemmatize===
     lemmatizer = WordNetLemmatizer()
     def lemmatize_words(text):
         words = text.split()
         words = [lemmatizer.lemmatize(word) for word in words]
         return ' '.join(words)
-    paper['Abstract_lem'] = paper['Abstract_pre'].apply(lemmatize_words)
-        
-        #===stopword removal===
-    stop = stopwords.words('english')
-    paper['Abstract_stop'] = paper['Abstract_lem'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
-    global topic_abs
-    topic_abs = paper.Abstract_stop.values.tolist()
+    paper['Abstract_lem'] = paper['Abstract_stop'].apply(lemmatize_words)
+     
+    topic_abs = paper.Abstract_lem.values.tolist()
     return topic_abs, paper
 
 #===upload file===
