@@ -29,6 +29,7 @@ import bitermplus as btm
 import tmplot as tmp
 import tomotopy
 import sys
+import spacy
 
 #===config===
 st.set_page_config(
@@ -243,11 +244,13 @@ if uploaded_file is not None:
      #===BERTopic===
     elif method == 'BERTopic':
         num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_bert)
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def bertopic_vis():
           topic_time = paper.Year.values.tolist()
           cluster_model = KMeans(n_clusters=num_btopic)
-          topic_model = BERTopic(hdbscan_model=cluster_model, language="multilingual").fit(topic_abs)
+          nlp = spacy.load("en_core_web_md", exclude=['tagger', 'parser', 'ner', 
+                                            'attribute_ruler', 'lemmatizer'])
+          topic_model = BERTopic(embedding_model=nlp, hdbscan_model=cluster_model, language="multilingual").fit(topic_abs)
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
