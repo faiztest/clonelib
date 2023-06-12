@@ -39,11 +39,15 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your file here...')
 
-def reset_resource():
+def reset_pylda():
      pylda.clear()
+
+def reset_biterm():
      biterm_topic.clear()
      biterm_map.clear()
      biterm_bar.clear()
+
+def reset_bert():
      bertopic_vis.clear()
      Vis_Topics.clear()
      Vis_Hierarchy.clear()
@@ -129,7 +133,7 @@ if uploaded_file is not None:
         st.write('')
 
     elif method == 'pyLDA':
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_resource)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_pylda)
          @st.cache_data(ttl=3600)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
@@ -175,7 +179,7 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method == 'Biterm':
-        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_resource)     
+        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_biterm)     
         #===optimize Biterm===
         @st.cache_data(ttl=3600)
         def biterm_topic():
@@ -235,7 +239,7 @@ if uploaded_file is not None:
     
      #===BERTopic===
     elif method == 'BERTopic':
-        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_resource)
+        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_bert)
         @st.cache_resource(ttl=3600)
         def bertopic_vis():
           topic_time = paper.Year.values.tolist()
