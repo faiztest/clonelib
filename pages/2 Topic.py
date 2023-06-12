@@ -43,9 +43,12 @@ def reset_pylda():
      pylda.clear()
 
 def reset_biterm():
-     biterm_topic.clear()
-     biterm_map.clear()
-     biterm_bar.clear()
+     try:
+          biterm_topic.clear()
+          biterm_map.clear()
+          biterm_bar.clear()
+     except NameError:
+          biterm_topic.clear()
 
 def reset_bert():
      bertopic_vis.clear()
