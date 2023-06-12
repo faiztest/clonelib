@@ -40,12 +40,10 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your CSV file here ...')
 
-def reset_resource():
-     st.cache_resource.clear()
 
 def reset_all():
      st.cache_data.clear()
-     st.cache_resource.clear()
+
      
 #===clean csv===
 @st.cache_data(ttl=3600)
@@ -117,15 +115,15 @@ if uploaded_file is not None:
     topic_abs, paper=clean_csv()
     method = st.selectbox(
             'Choose method',
-            ('Choose...', 'pyLDA', 'Biterm','BERTopic'), on_change=reset_resource)
+            ('Choose...', 'pyLDA', 'Biterm','BERTopic'), on_change=reset_all)
         
     #===topic===
     if method == 'Choose...':
         st.write('')
 
     elif method == 'pyLDA':
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_resource)
-         @st.cache_resource(ttl=3600)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
+         @st.cache_data(ttl=3600)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
             id2word = Dictionary(topic_abs_LDA)
@@ -170,9 +168,9 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method == 'Biterm':
-        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_resource)     
+        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_all)     
         #===optimize Biterm===
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def biterm_topic():
             X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
             tf = np.array(X.sum(axis=0)).ravel()
@@ -196,12 +194,12 @@ if uploaded_file is not None:
           with tab1:
             col1, col2 = st.columns(2)
                   
-            @st.cache_resource(ttl=3600)
+            @st.cache_data(ttl=3600)
             def biterm_map(num):
               btmvis_coords = tmp.plot_scatter_topics(topics_coords, size_col='size', label_col='label', topic=num)
               return btmvis_coords
                   
-            @st.cache_resource(ttl=3600)
+            @st.cache_data(ttl=3600)
             def biterm_bar(num):
               terms_probs = tmp.calc_terms_probs_ratio(phi, topic=num, lambda_=1)
               btmvis_probs = tmp.plot_terms(terms_probs, font_size=12)
@@ -230,8 +228,8 @@ if uploaded_file is not None:
     
      #===BERTopic===
     elif method == 'BERTopic':
-        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_resource)
-        @st.cache_resource(ttl=3600)
+        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_all)
+        @st.cache_data(ttl=3600)
         def bertopic_vis():
           topic_time = paper.Year.values.tolist()
           cluster_model = KMeans(n_clusters=num_btopic)
@@ -239,33 +237,33 @@ if uploaded_file is not None:
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Topics():
           fig1 = topic_model.visualize_topics()
           return fig1
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Documents():
           fig2 = topic_model.visualize_documents(topic_abs)
           return fig2
 
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Hierarchy():
           fig3 = topic_model.visualize_hierarchy(top_n_topics=num_btopic)
           return fig3
     
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Heatmap():
           global topic_model
           fig4 = topic_model.visualize_heatmap(n_clusters=num_btopic-1, width=1000, height=1000)
           return fig4
 
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Barchart():
           fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic, n_words=10)
           return fig5
     
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_ToT():
           topics_over_time = topic_model.topics_over_time(topic_abs, topic_time)
           fig6 = topic_model.visualize_topics_over_time(topics_over_time)
