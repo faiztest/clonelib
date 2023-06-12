@@ -30,6 +30,7 @@ import tmplot as tmp
 import tomotopy
 import sys
 import spacy
+import en_core_web_sm
 
 #===config===
 st.set_page_config(
