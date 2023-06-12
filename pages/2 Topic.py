@@ -236,7 +236,7 @@ if uploaded_file is not None:
           topic_time = paper.Year.values.tolist()
           cluster_model = KMeans(n_clusters=num_btopic)
           topic_model = BERTopic(hdbscan_model=cluster_model).fit(topic_abs)
-          topic_model.topic_representations_[:10]
+          topic_model.topic_representations_[10]
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
