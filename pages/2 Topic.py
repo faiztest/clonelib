@@ -40,11 +40,20 @@ st.header("Topic Modeling")
 st.subheader('Put your file here...')
 
 def reset_resource():
-     st.cache_resource.clear()
+     pylda.clear()
+     biterm_topic.clear()
+     biterm_map.clear()
+     biterm_bar.clear()
+     bertopic_vis.clear()
+     Vis_Topics.clear()
+     Vis_Hierarchy.clear()
+     Vis_Heatmap.clear()
+     Vis_Barchart.clear()
+     Vis_ToT.clear()
+     st.cache_resources.clear()
 
 def reset_all():
      st.cache_data.clear()
-     st.cache_resource.clear()
      
 #===clean csv===
 @st.cache_data(ttl=3600)
@@ -120,7 +129,7 @@ if uploaded_file is not None:
         st.write('')
 
     elif method == 'pyLDA':
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_resource)
          @st.cache_data(ttl=3600)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
@@ -166,7 +175,7 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method == 'Biterm':
-        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_all)     
+        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_resource)     
         #===optimize Biterm===
         @st.cache_data(ttl=3600)
         def biterm_topic():
@@ -235,33 +244,33 @@ if uploaded_file is not None:
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Topics():
           fig1 = topic_model.visualize_topics()
           return fig1
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Documents():
           fig2 = topic_model.visualize_documents(topic_abs)
           return fig2
 
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Hierarchy():
           fig3 = topic_model.visualize_hierarchy(top_n_topics=num_btopic)
           return fig3
     
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Heatmap():
           global topic_model
           fig4 = topic_model.visualize_heatmap(n_clusters=num_btopic-1, width=1000, height=1000)
           return fig4
 
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_Barchart():
           fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic, n_words=10)
           return fig5
     
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def Vis_ToT():
           topics_over_time = topic_model.topics_over_time(topic_abs, topic_time)
           fig6 = topic_model.visualize_topics_over_time(topics_over_time)
