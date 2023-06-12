@@ -262,7 +262,7 @@ if uploaded_file is not None:
 
         @st.cache_resource(ttl=3600)
         def Vis_Barchart():
-          fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic)
+          fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic, n_words=10)
           return fig5
     
         @st.cache_resource(ttl=3600)
