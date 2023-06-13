@@ -43,8 +43,8 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your file here...')
 
-#def reset_pylda():
-#     pylda.clear()
+def reset_pylda():
+     pylda.clear()
 
 def reset_biterm():
      try:
@@ -140,7 +140,7 @@ if uploaded_file is not None:
         st.write('')
 
     elif method == 'pyLDA':
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_pylda)
          @st.cache_data(ttl=3600, show_spinner=False)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
