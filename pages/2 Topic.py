@@ -67,7 +67,7 @@ def reset_all():
      st.cache_resource.clear()
         
 #===clean csv===
-@st.cache_resource(ttl=3600, show_spinner=False)
+@st.cache_data(ttl=3600, show_spinner=False)
 def clean_csv():
     try:
         paper = papers.dropna(subset=['Abstract'])
@@ -98,13 +98,13 @@ def clean_csv():
     return topic_abs, paper
 
 #===upload file===
-@st.cache_resource(ttl=3600)
+@st.cache_data(ttl=3600)
 def upload(file):
     uploaded_file = file
     papers = pd.read_csv(uploaded_file)
     return papers
 
-@st.cache_resource(ttl=3600)
+@st.cache_data(ttl=3600)
 def conv_txt(file):
     col_dict = {'TI': 'Title',
             'SO': 'Source title',
@@ -115,7 +115,7 @@ def conv_txt(file):
     papers.rename(columns=col_dict, inplace=True)
     return papers
 
-@st.cache_resource(ttl=3600)
+@st.cache_data(ttl=3600)
 def get_ext(file):
     extype = file.name
     return extype
@@ -141,7 +141,7 @@ if uploaded_file is not None:
 
     elif method == 'pyLDA':
          num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
-         @st.cache_resource(ttl=3600, show_spinner=False)
+         @st.cache_data(ttl=3600, show_spinner=False)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
             id2word = Dictionary(topic_abs_LDA)
@@ -188,7 +188,7 @@ if uploaded_file is not None:
     elif method == 'Biterm':
         num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_all)     
         #===optimize Biterm===
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def biterm_topic():
             X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
             tf = np.array(X.sum(axis=0)).ravel()
@@ -246,7 +246,7 @@ if uploaded_file is not None:
     
      #===BERTopic===
     elif method == 'BERTopic':
-        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_bert)
+        num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_all)
         @st.cache_data(ttl=3600)
         def bertopic_vis():
           topic_time = paper.Year.values.tolist()
