@@ -31,6 +31,7 @@ import tomotopy
 import sys
 import spacy
 import en_core_web_sm
+import pipeline
 nlp = en_core_web_sm.load()
 
 #===config===
