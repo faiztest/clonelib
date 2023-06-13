@@ -64,9 +64,10 @@ def reset_bert():
 
 def reset_all():
      st.cache_data.clear()
+     st.cache_resource.clear()
         
 #===clean csv===
-@st.cache_data(ttl=3600)
+@st.cache_resource(ttl=3600)
 def clean_csv():
     try:
         paper = papers.dropna(subset=['Abstract'])
@@ -97,13 +98,13 @@ def clean_csv():
     return topic_abs, paper
 
 #===upload file===
-@st.cache_data(ttl=3600)
+@st.cache_resource(ttl=3600)
 def upload(file):
     uploaded_file = file
     papers = pd.read_csv(uploaded_file)
     return papers
 
-@st.cache_data(ttl=3600)
+@st.cache_resource(ttl=3600)
 def conv_txt(file):
     col_dict = {'TI': 'Title',
             'SO': 'Source title',
@@ -114,7 +115,7 @@ def conv_txt(file):
     papers.rename(columns=col_dict, inplace=True)
     return papers
 
-@st.cache_data(ttl=3600)
+@st.cache_resource(ttl=3600)
 def get_ext(file):
     extype = file.name
     return extype
