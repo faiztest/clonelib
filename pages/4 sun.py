@@ -27,10 +27,10 @@ def upload(file):
     papers = pd.read_csv(uploaded_file)
     return papers
 
-if upload is not None:
-     st.write('There is another user')
-else:
+if upload is None:
      st.write('No user')
+else:
+     st.write('Another user')
 
 @st.cache_resource(ttl=3600)
 def conv_txt(file):
