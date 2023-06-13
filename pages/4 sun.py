@@ -14,7 +14,7 @@ st.set_page_config(
 st.header("Data visualization")
 st.subheader('Put your CSV file and choose a visualization')
 
-if papers is not None::
+if papers is not None:
      st.write('There is another user')
 
 def reset_all():
