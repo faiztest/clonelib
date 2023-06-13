@@ -141,7 +141,7 @@ if uploaded_file is not None:
 
     elif method == 'pyLDA':
          num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_pylda)
-         @st.cache_data(ttl=3600)
+         @st.cache_resource(ttl=3600)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
             id2word = Dictionary(topic_abs_LDA)
