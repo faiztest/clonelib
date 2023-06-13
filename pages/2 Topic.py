@@ -30,8 +30,10 @@ import tmplot as tmp
 import tomotopy
 import sys
 import spacy
-nlp = spacy.load("en_core_web_sm") 
+import en_core_web_sm
+import pipeline
 
+nlp = en_core_web_sm.load()
 
 #===config===
 st.set_page_config(
