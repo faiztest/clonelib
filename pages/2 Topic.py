@@ -251,7 +251,7 @@ if uploaded_file is not None:
           topic_time = paper.Year.values.tolist()
           cluster_model = KMeans(n_clusters=num_btopic)
           #nlp = en_core_web_sm.load(), exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
-          nlp = spacy.load("en_core_web_md", exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
+          nlp = spacy.load('en_core_web_md', exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
           topic_model = BERTopic(embedding_model=nlp, hdbscan_model=cluster_model, language="multilingual").fit(topic_abs)
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
