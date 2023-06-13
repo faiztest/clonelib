@@ -67,7 +67,7 @@ def reset_all():
      st.cache_resource.clear()
         
 #===clean csv===
-@st.cache_data(ttl=3600, show_spinner=False)
+@st.cache_resource(ttl=3600, show_spinner=False)
 def clean_csv():
     try:
         paper = papers.dropna(subset=['Abstract'])
