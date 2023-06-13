@@ -75,7 +75,7 @@ if uploaded_file is not None:
         papers, MIN, MAX, GAP = get_minmax()
         
         if (GAP != 0):
-            YEAR = st.slider('Year', min_value=MIN, max_value=MAX, value=(MIN, MAX), on_change=reset_resource)
+            YEAR = st.slider('Year', min_value=MIN, max_value=MAX, value=(MIN, MAX), on_change=reset_all)
         else:
             st.write('You only have data in ', (MAX))
             YEAR = (MIN, MAX)
