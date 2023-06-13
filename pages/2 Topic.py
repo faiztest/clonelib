@@ -43,8 +43,8 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your file here...')
 
-def reset_pylda():
-     pylda.clear()
+#def reset_pylda():
+#     pylda.clear()
 
 def reset_biterm():
      try:
@@ -67,7 +67,7 @@ def reset_all():
      st.cache_resource.clear()
         
 #===clean csv===
-@st.cache_resource(ttl=3600)
+@st.cache_resource(ttl=3600, show_spinner=False)
 def clean_csv():
     try:
         paper = papers.dropna(subset=['Abstract'])
@@ -140,8 +140,8 @@ if uploaded_file is not None:
         st.write('')
 
     elif method == 'pyLDA':
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_pylda)
-         @st.cache_resource(ttl=3600)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
+         @st.cache_resource(ttl=3600, show_spinner=False)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
             id2word = Dictionary(topic_abs_LDA)
