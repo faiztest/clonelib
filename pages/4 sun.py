@@ -14,9 +14,6 @@ st.set_page_config(
 st.header("Data visualization")
 st.subheader('Put your CSV file and choose a visualization')
 
-if papers is not None:
-     st.write('There is another user')
-
 def reset_all():
      st.cache_data.clear()
      st.cache_resource.clear()
@@ -29,6 +26,9 @@ def upload(file):
     uploaded_file = file
     papers = pd.read_csv(uploaded_file)
     return papers
+
+if upload is not None:
+     st.write('There is another user')
 
 @st.cache_resource(ttl=3600)
 def conv_txt(file):
