@@ -140,7 +140,7 @@ if uploaded_file is not None:
         st.write('')
 
     elif method == 'pyLDA':
-         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_pylda)
+         num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
          @st.cache_data(show_spinner=False)
          def pylda():
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
