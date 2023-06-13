@@ -29,6 +29,8 @@ def upload(file):
 
 if upload is not None:
      st.write('There is another user')
+else:
+     st.write('No user')
 
 @st.cache_resource(ttl=3600)
 def conv_txt(file):
