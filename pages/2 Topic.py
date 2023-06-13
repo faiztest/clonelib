@@ -186,9 +186,9 @@ if uploaded_file is not None:
      
      #===Biterm===
     elif method == 'Biterm':
-        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_biterm)     
+        num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_all)     
         #===optimize Biterm===
-        @st.cache_data(ttl=3600)
+        @st.cache_resource(ttl=3600)
         def biterm_topic():
             X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
             tf = np.array(X.sum(axis=0)).ravel()
@@ -212,12 +212,12 @@ if uploaded_file is not None:
           with tab1:
             col1, col2 = st.columns(2)
                   
-            @st.cache_data(ttl=3600)
+            @st.cache_resource(ttl=3600)
             def biterm_map(num):
               btmvis_coords = tmp.plot_scatter_topics(topics_coords, size_col='size', label_col='label', topic=num)
               return btmvis_coords
                   
-            @st.cache_data(ttl=3600)
+            @st.cache_resource(ttl=3600)
             def biterm_bar(num):
               terms_probs = tmp.calc_terms_probs_ratio(phi, topic=num, lambda_=1)
               btmvis_probs = tmp.plot_terms(terms_probs, font_size=12)
