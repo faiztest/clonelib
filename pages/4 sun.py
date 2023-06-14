@@ -23,7 +23,7 @@ def reset_resource():
 
 @st.cache_resource(ttl=3600)
 def upload(extype):
-    extype
+    extype = extype
     papers = pd.read_csv(uploaded_file)
     return papers
 
@@ -60,7 +60,7 @@ if uploaded_file is not None:
     
     @st.cache_data(ttl=3600)
     def get_minmax(extype):
-        extype
+        extype = extype
         MIN = int(papers['Year'].min())
         MAX = int(papers['Year'].max())
         GAP = MAX - MIN
@@ -80,7 +80,7 @@ if uploaded_file is not None:
         
         @st.cache_resource(ttl=3600)
         def listyear(extype):
-            extype
+            extype = extype
             global papers
             years = list(range(YEAR[0],YEAR[1]+1))
             papers = papers.loc[papers['Year'].isin(years)]
@@ -88,7 +88,7 @@ if uploaded_file is not None:
         
         @st.cache_resource(ttl=3600)
         def vis_sunbrust(extype):
-            extype
+            extype = extype
             papers['Cited by'] = papers['Cited by'].fillna(0)
             vis = pd.DataFrame()
             vis[['doctype','source','citby','year']] = papers[['Document Type','Source title','Cited by','Year']]
