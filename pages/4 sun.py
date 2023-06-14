@@ -16,18 +16,14 @@ st.subheader('Put your CSV file and choose a visualization')
 
 def reset_all():
      st.cache_data.clear()
-     st.cache_resource.clear()
 
-def reset_resource():
-     st.cache_resource.clear()
-
-@st.cache_resource(ttl=3600)
+@st.cache_data(ttl=3600)
 def upload(extype):
     extype = extype
     papers = pd.read_csv(uploaded_file)
     return papers
 
-@st.cache_resource(ttl=3600)
+@st.cache_data(ttl=3600)
 def conv_txt(extype):
     extype
     col_dict = {'TI': 'Title',
@@ -78,7 +74,7 @@ if uploaded_file is not None:
             st.write('You only have data in ', (MAX))
             YEAR = (MIN, MAX)
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def listyear(extype):
             extype = extype
             global papers
@@ -86,7 +82,7 @@ if uploaded_file is not None:
             papers = papers.loc[papers['Year'].isin(years)]
             return years, papers
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def vis_sunbrust(extype):
             extype = extype
             papers['Cited by'] = papers['Cited by'].fillna(0)
