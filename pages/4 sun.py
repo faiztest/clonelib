@@ -15,7 +15,7 @@ st.header("Data visualization")
 st.subheader('Put your file here...')
 
 @st.cache_data(ttl=3600)
-def get_ext(extype):
+def get_ext(uploaded_file):
     extype = uploaded_file.name
     return extype
 
@@ -46,7 +46,7 @@ def conv_txt(extype):
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
-    extype = get_ext(extype)
+    extype = get_ext(uploaded_file)
     if extype.endswith('.csv'):
          papers = upload(extype) 
     elif extype.endswith('.txt'):
