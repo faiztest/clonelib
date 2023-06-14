@@ -260,8 +260,8 @@ if uploaded_file is not None:
           fig1 = topic_model.visualize_topics()
           return fig1
         
-        @st.cache_data(extype)
-        def Vis_Documents():
+        @st.cache_data()
+        def Vis_Documents(extype):
           fig2 = topic_model.visualize_documents(topic_abs)
           return fig2
 
