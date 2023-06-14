@@ -158,6 +158,7 @@ if uploaded_file is not None:
         
         @st.cache_data(ttl=3600)
         def arm_table(extype):
+            extype = extype
             global conf, freq_item
             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
             res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
@@ -180,6 +181,7 @@ if uploaded_file is not None:
                 with st.spinner('Visualizing, please wait ....'): 
                      @st.cache_data(ttl=3600)
                      def map_node(extype):
+                        extype = extype
                         res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
                         res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
                         res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) #[['consequents','consequent support']]
@@ -190,6 +192,7 @@ if uploaded_file is not None:
 
                      @st.cache_data(ttl=3600)
                      def arul_network(extype):
+                        extype = extype
                         nodes = []
                         edges = []
 
