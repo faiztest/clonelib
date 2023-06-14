@@ -29,9 +29,7 @@ import bitermplus as btm
 import tmplot as tmp
 import tomotopy
 import sys
-import spacy
-import en_core_web_sm
-import pipeline
+
 
 
 #===config===
@@ -250,8 +248,8 @@ if uploaded_file is not None:
         def bertopic_vis(extype):
           topic_time = paper.Year.values.tolist()
           cluster_model = KMeans(n_clusters=num_btopic)
-          nlp = en_core_web_sm.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
-          topic_model = BERTopic(embedding_model=nlp, hdbscan_model=cluster_model, language="multilingual").fit(topic_abs)
+          #nlp = en_core_web_sm.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
+          topic_model = BERTopic(hdbscan_model=cluster_model, language="multilingual").fit(topic_abs)
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
