@@ -189,6 +189,7 @@ if uploaded_file is not None:
                         return res_node, res
                      
                      res_node, res = map_node(extype)
+                     st.dataframe(res, use_container_width=True)
 
                      @st.cache_data(ttl=3600)
                      def arul_network(extype):
