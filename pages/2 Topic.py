@@ -43,6 +43,19 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your file here...')
 
+#========uid========
+@st.cache_resource
+def create_list():
+    l = [1, 2, 3]
+    return l
+
+l = create_list()
+first_list_value = l[0]
+l[0] = first_list_value + 1
+uID = str(l[0])
+st.write("l[0] is:", l[0], uID)
+
+
 def reset_pylda():
      pylda.clear()
 
@@ -116,13 +129,14 @@ def conv_txt(extype):
 
 @st.cache_data()
 def get_ext(uploaded_file):
-    extype = uploaded_file.name
+    extype = uID+uploaded_file.name
     return extype
 
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
+    st.write(extype)
     extype = get_ext(uploaded_file)
     if extype.endswith('.csv'):
          papers = upload(extype) 
