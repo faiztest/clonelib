@@ -46,7 +46,7 @@ def reset_all():
 @st.cache_data(ttl=3600)
 def get_ext(extype):
     extype = uploaded_file.name
-    uID = uploaded_file.name+uID
+    uID = uploaded_file.name+uD
     return extype, uID
 
 @st.cache_data(ttl=3600)
