@@ -50,12 +50,11 @@ def get_ext(extype):
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
-
 if uploaded_file is not None:
     extype = get_ext(uploaded_file)
     if extype.endswith('.csv'):
          papers = upload(extype) 
-         st.write(extype)
+   
     elif extype.endswith('.txt'):
          papers = conv_txt(extype)
     
@@ -108,7 +107,7 @@ if uploaded_file is not None:
         if {'Document Type','Source title','Cited by','Year'}.issubset(papers.columns):
             fig = vis_sunbrust(extype)
             st.plotly_chart(fig, height=800, width=1200) #use_container_width=True)
-            st.write(extype)
+           
         else:
             st.error('We require these columns: Document Type, Source title, Cited by, Year', icon="🚨")
     
