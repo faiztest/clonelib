@@ -30,13 +30,13 @@ st.subheader('Put your file here...')
 #====uid===
 @st.cache_resource
 def create_list():
-    l = [1, 2, 3]
+    l = [1, 2]
     return l
 
 l = create_list()
 first_list_value = l[0]
 l[0] = first_list_value + 1
-uD = l[0]
+uD = str(l[0])
 st.write("l[0] is:", l[0], uD)
 
 
@@ -46,7 +46,8 @@ def reset_all():
 @st.cache_data(ttl=3600)
 def get_ext(extype):
     extype = uploaded_file.name
-    return extype
+    uID = uploaded_file.name+
+    return extype, uID
 
 @st.cache_data(ttl=3600)
 def upload(extype):
@@ -68,7 +69,7 @@ def conv_txt(extype):
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
-    extype = get_ext(uploaded_file)
+    extype, uID = get_ext(uploaded_file)
     if extype.endswith('.csv'):
          papers = upload(extype) 
     elif extype.endswith('.txt'):
@@ -164,14 +165,14 @@ if uploaded_file is not None:
     with tab1:
         #===Association rules===
         @st.cache_data(ttl=3600)
-        def freqitem(extype):
+        def freqitem(uID):
             global supp, maxlen
             freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
             return freq_item
         
         @st.cache_data(ttl=3600)
-        def arm_table(extype):
-            extype = extype
+        def arm_table(uID):
+            st.write(uID)
             global conf, freq_item
             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
             res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
@@ -180,13 +181,13 @@ if uploaded_file is not None:
             restab = res
             return res, restab
 
-        freq_item = freqitem(extype)
+        freq_item = freqitem(uID)
         st.write('🚨 The more data you have, the longer you will have to wait.')
 
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
         else:
-            res, restab = arm_table(extype)
+            res, restab = arm_table(uID)
             st.dataframe(restab, use_container_width=True)
                    
              #===visualize===
@@ -194,20 +195,19 @@ if uploaded_file is not None:
             if st.button('📈 Generate network visualization'):
                 with st.spinner('Visualizing, please wait ....'): 
                      @st.cache_data(ttl=3600)
-                     def map_node(extype):
-                        st.write(extype)
+                     def map_node(uID):
+                        st.write(uID)
                         res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
                         res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
                         res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) #[['consequents','consequent support']]
                         res_node = pd.concat([res_ant, res_con]).drop_duplicates(keep='first')
                         return res_node, res
                      
-                     res_node, res = map_node(extype)
+                     res_node, res = map_node(uID)
                      st.dataframe(res, use_container_width=True)
 
                      @st.cache_data(ttl=3600)
-                     def arul_network(extype):
-                        extype = extype
+                     def arul_network(uID):
                         nodes = []
                         edges = []
 
@@ -234,7 +234,7 @@ if uploaded_file is not None:
                                     )  
                         return nodes, edges
 
-                     nodes, edges = arul_network(extype)
+                     nodes, edges = arul_network(uID)
                      config = Config(width=1200,
                                      height=800,
                                      directed=True, 
