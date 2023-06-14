@@ -14,18 +14,23 @@ st.set_page_config(
 st.header("Data visualization")
 st.subheader('Put your CSV file and choose a visualization')
 
+#===clear cache===
 def reset_all():
      st.cache_data.clear()
 
+#===check type===
+@st.cache_data(ttl=3600)
+def get_ext(extype):
+    extype = uploaded_file.name
+    return extype
+
 @st.cache_data(ttl=3600)
 def upload(extype):
-    extype = extype
     papers = pd.read_csv(uploaded_file)
     return papers
 
 @st.cache_data(ttl=3600)
 def conv_txt(extype):
-    extype
     col_dict = {'TI': 'Title',
             'SO': 'Source title',
             'DT': 'Document Type',
@@ -37,11 +42,6 @@ def conv_txt(extype):
     papers = pd.read_csv(uploaded_file, sep='\t', lineterminator='\r')
     papers.rename(columns=col_dict, inplace=True)
     return papers
-
-@st.cache_data(ttl=3600)
-def get_ext(extype):
-    extype = uploaded_file.name
-    return extype
 
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
@@ -76,7 +76,6 @@ if uploaded_file is not None:
         
         @st.cache_data(ttl=3600)
         def listyear(extype):
-            extype = extype
             global papers
             years = list(range(YEAR[0],YEAR[1]+1))
             papers = papers.loc[papers['Year'].isin(years)]
@@ -84,7 +83,6 @@ if uploaded_file is not None:
         
         @st.cache_data(ttl=3600)
         def vis_sunbrust(extype):
-            extype = extype
             papers['Cited by'] = papers['Cited by'].fillna(0)
             vis = pd.DataFrame()
             vis[['doctype','source','citby','year']] = papers[['Document Type','Source title','Cited by','Year']]
