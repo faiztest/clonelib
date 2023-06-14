@@ -124,9 +124,8 @@ def conv_txt(extype):
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
 
 if uploaded_file is not None:
-    
     extype = get_ext(uploaded_file)
-    st.write(extype)
+
     if extype.endswith('.csv'):
          papers = upload(extype) 
     elif extype.endswith('.txt'):
