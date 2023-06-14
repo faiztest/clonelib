@@ -100,7 +100,6 @@ def clean_csv(extype):
 #===upload file===
 @st.cache_data()
 def upload(file):
-    uploaded_file = file
     papers = pd.read_csv(uploaded_file)
     return papers
 
