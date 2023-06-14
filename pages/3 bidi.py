@@ -29,10 +29,6 @@ st.subheader('Put your file here...')
 
 def reset_all():
      st.cache_data.clear()
-     st.cache_resource.clear()
-
-def reset_resource():
-     st.cache_resource.clear()
 
 @st.cache_data(ttl=3600)
 def get_ext(extype):
@@ -140,27 +136,27 @@ if uploaded_file is not None:
     with col1:
         supp = st.slider(
             'Select value of Support',
-            0.001, 1.000, (0.010), on_change=reset_resource)
+            0.001, 1.000, (0.010), on_change=reset_all)
     with col2:
         conf = st.slider(
             'Select value of Confidence',
-            0.001, 1.000, (0.050), on_change=reset_resource)
+            0.001, 1.000, (0.050), on_change=reset_all)
     with col3:
         maxlen = st.slider(
             'Maximum length of the itemsets generated',
-            2, 8, (2), on_change=reset_resource)
+            2, 8, (2), on_change=reset_all)
 
     tab1, tab2 = st.tabs(["📈 Result & Generate visualization", "📓 Recommended Reading"])
     
     with tab1:
         #===Association rules===
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def freqitem(extype):
             global supp, maxlen
             freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
             return freq_item
         
-        @st.cache_resource(ttl=3600)
+        @st.cache_data(ttl=3600)
         def arm_table(extype):
             global conf, freq_item
             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
@@ -182,7 +178,7 @@ if uploaded_file is not None:
                 
             if st.button('📈 Generate network visualization'):
                 with st.spinner('Visualizing, please wait ....'): 
-                     @st.cache_resource(ttl=3600)
+                     @st.cache_data(ttl=3600)
                      def map_node(extype):
                         res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
                         res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
@@ -192,7 +188,7 @@ if uploaded_file is not None:
                      
                      res_node, res = map_node(extype)
 
-                     @st.cache_resource(ttl=3600)
+                     @st.cache_data(ttl=3600)
                      def arul_network(extype):
                         nodes = []
                         edges = []
