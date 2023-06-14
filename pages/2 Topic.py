@@ -43,8 +43,8 @@ st.set_page_config(
 st.header("Topic Modeling")
 st.subheader('Put your file here...')
 
-#========uid========
-@st.cache_resource
+#========unique id========
+@st.cache_resource(ttl=3600)
 def create_list():
     l = [1, 2, 3]
     return l
@@ -53,34 +53,26 @@ l = create_list()
 first_list_value = l[0]
 l[0] = first_list_value + 1
 uID = str(l[0])
-st.write("l[0] is:", l[0], uID)
 
+@st.cache_data(ttl=3600)
+def get_ext(uploaded_file):
+    extype = uID+uploaded_file.name
+    return extype
 
-def reset_pylda():
-     pylda.clear()
+#===clear cache===
 
 def reset_biterm():
      try:
-          #biterm_topic.clear()
           biterm_map.clear()
           biterm_bar.clear()
      except NameError:
           biterm_topic.clear()
 
-def reset_bert():
-     bertopic_vis.clear()
-     Vis_Topics.clear()
-     Vis_Hierarchy.clear()
-     Vis_Heatmap.clear()
-     Vis_Barchart.clear()
-     Vis_ToT.clear()
-
 def reset_all():
      st.cache_data.clear()
-     st.cache_resource.clear()
         
 #===clean csv===
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=3600, show_spinner=False)
 def clean_csv(extype):
     try:
         paper = papers.dropna(subset=['Abstract'])
@@ -111,12 +103,12 @@ def clean_csv(extype):
     return topic_abs, paper
 
 #===upload file===
-@st.cache_data()
+@st.cache_data(ttl=3600)
 def upload(file):
     papers = pd.read_csv(uploaded_file)
     return papers
 
-@st.cache_data()
+@st.cache_data(ttl=3600)
 def conv_txt(extype):
     col_dict = {'TI': 'Title',
             'SO': 'Source title',
@@ -127,10 +119,6 @@ def conv_txt(extype):
     papers.rename(columns=col_dict, inplace=True)
     return papers
 
-@st.cache_data()
-def get_ext(uploaded_file):
-    extype = uID+uploaded_file.name
-    return extype
 
 #===Read data===
 uploaded_file = st.file_uploader("Choose a file", type=['csv', 'txt'], on_change=reset_all)
@@ -155,7 +143,7 @@ if uploaded_file is not None:
 
     elif method == 'pyLDA':
          num_topic = st.slider('Choose number of topics', min_value=2, max_value=15, step=1, on_change=reset_all)
-         @st.cache_data(show_spinner=False)
+         @st.cache_data(ttl=3600, show_spinner=False)
          def pylda(extype):
             topic_abs_LDA = [t.split(' ') for t in topic_abs]
             id2word = Dictionary(topic_abs_LDA)
@@ -202,7 +190,7 @@ if uploaded_file is not None:
     elif method == 'Biterm':
         num_bitopic = st.slider('Choose number of topics', min_value=2, max_value=20, step=1, on_change=reset_all)     
         #===optimize Biterm===
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def biterm_topic(extype):
             X, vocabulary, vocab_dict = btm.get_words_freqs(topic_abs)
             tf = np.array(X.sum(axis=0)).ravel()
@@ -226,12 +214,12 @@ if uploaded_file is not None:
           with tab1:
             col1, col2 = st.columns(2)
                   
-            @st.cache_data()
+            @st.cache_data(ttl=3600)
             def biterm_map(extype):
               btmvis_coords = tmp.plot_scatter_topics(topics_coords, size_col='size', label_col='label', topic=numvis)
               return btmvis_coords
                   
-            @st.cache_data()
+            @st.cache_data(ttl=3600)
             def biterm_bar(extype):
               terms_probs = tmp.calc_terms_probs_ratio(phi, topic=numvis, lambda_=1)
               btmvis_probs = tmp.plot_terms(terms_probs, font_size=12)
@@ -261,7 +249,7 @@ if uploaded_file is not None:
      #===BERTopic===
     elif method == 'BERTopic':
         num_btopic = st.slider('Choose number of topics', min_value=4, max_value=20, step=1, on_change=reset_all)
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def bertopic_vis(extype):
           topic_time = paper.Year.values.tolist()
           cluster_model = KMeans(n_clusters=num_btopic)
@@ -270,33 +258,33 @@ if uploaded_file is not None:
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def Vis_Topics(extype):
           fig1 = topic_model.visualize_topics()
           return fig1
         
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def Vis_Documents(extype):
           fig2 = topic_model.visualize_documents(topic_abs)
           return fig2
 
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def Vis_Hierarchy(extype):
           fig3 = topic_model.visualize_hierarchy(top_n_topics=num_btopic)
           return fig3
     
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def Vis_Heatmap(extype):
           global topic_model
           fig4 = topic_model.visualize_heatmap(n_clusters=num_btopic-1, width=1000, height=1000)
           return fig4
 
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def Vis_Barchart(extype):
           fig5 = topic_model.visualize_barchart(top_n_topics=num_btopic, n_words=10)
           return fig5
     
-        @st.cache_data()
+        @st.cache_data(ttl=3600)
         def Vis_ToT(extype):
           topics_over_time = topic_model.topics_over_time(topic_abs, topic_time)
           fig6 = topic_model.visualize_topics_over_time(topics_over_time)
