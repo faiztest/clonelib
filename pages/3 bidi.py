@@ -27,6 +27,19 @@ st.set_page_config(
 st.header("Biderected Keywords Network")
 st.subheader('Put your file here...')
 
+#====uid===
+@st.cache_resource
+def create_list():
+    l = [1, 2, 3]
+    return l
+
+l = create_list()
+first_list_value = l[0]
+l[0] = first_list_value + 1
+uD = l[0]
+st.write("l[0] is:", l[0], uD)
+
+
 def reset_all():
      st.cache_data.clear()
 
