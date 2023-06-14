@@ -225,7 +225,7 @@ if uploaded_file is not None:
             with col1:
               num_bitopic_vis = st.selectbox(
                 'Choose topic',
-                (totaltop), on_change=reset_all)
+                (totaltop))
               btmvis_coords = biterm_map(extype)
               st.altair_chart(btmvis_coords, use_container_width=True)
             with col2:
