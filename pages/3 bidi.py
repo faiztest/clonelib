@@ -192,7 +192,7 @@ if uploaded_file is not None:
                    
              #===visualize===
                 
-            if res is not None:
+            if st.button('📈 Generate network visualization', on_click=reset_all):
                 with st.spinner('Visualizing, please wait ....'): 
                      @st.cache_data(ttl=3600)
                      def map_node(uID):
