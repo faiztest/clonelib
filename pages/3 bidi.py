@@ -164,7 +164,8 @@ if uploaded_file is not None:
             res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
             res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            return res
+            restab = res
+            return res, restab
 
         freq_item = freqitem(extype)
         st.write('🚨 The more data you have, the longer you will have to wait.')
@@ -172,8 +173,8 @@ if uploaded_file is not None:
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
         else:
-            res = arm_table(extype)
-            st.dataframe(res, use_container_width=True)
+            res, restab = arm_table(extype)
+            st.dataframe(restab, use_container_width=True)
                    
              #===visualize===
                 
