@@ -27,10 +27,11 @@ st.set_page_config(
 st.header("Biderected Keywords Network")
 st.subheader('Put your file here...')
 
-
+#===clear cache===
 def reset_all():
      st.cache_data.clear()
 
+#===check type===
 @st.cache_data(ttl=3600)
 def get_ext(extype):
     extype = uploaded_file.name
