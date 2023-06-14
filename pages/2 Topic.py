@@ -213,17 +213,17 @@ if uploaded_file is not None:
                   
             @st.cache_data()
             def biterm_map(extype):
-              btmvis_coords = tmp.plot_scatter_topics(topics_coords, size_col='size', label_col='label', topic=num_bitopic_vis)
+              btmvis_coords = tmp.plot_scatter_topics(topics_coords, size_col='size', label_col='label', topic=numvis)
               return btmvis_coords
                   
             @st.cache_data()
             def biterm_bar(extype):
-              terms_probs = tmp.calc_terms_probs_ratio(phi, topic=num_bitopic_vis, lambda_=1)
+              terms_probs = tmp.calc_terms_probs_ratio(phi, topic=numvis, lambda_=1)
               btmvis_probs = tmp.plot_terms(terms_probs, font_size=12)
               return btmvis_probs
                   
             with col1:
-              num_bitopic_vis = st.selectbox(
+              numvis = st.selectbox(
                 'Choose topic',
                 (totaltop))
               btmvis_coords = biterm_map(extype)
