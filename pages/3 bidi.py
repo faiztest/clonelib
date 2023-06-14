@@ -197,11 +197,11 @@ if uploaded_file is not None:
                      @st.cache_data(ttl=3600)
                      def map_node(uID):
                         st.write(uID)
-                        #res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
-                        #res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
-                        #res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) #[['consequents','consequent support']]
-                        #res_node = pd.concat([res_ant, res_con]).drop_duplicates(keep='first')
-                        #return res_node, res
+                        res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
+                        res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
+                        res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) #[['consequents','consequent support']]
+                        res_node = pd.concat([res_ant, res_con]).drop_duplicates(keep='first')
+                        return res_node, res
                      
                      res_node, res = map_node(uID)
                      st.dataframe(res, use_container_width=True)
