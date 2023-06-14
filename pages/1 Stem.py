@@ -29,8 +29,8 @@ def reset_data():
 
 #===check filetype===
 @st.cache_data(ttl=3600)
-def get_ext(file):
-    extype = file.name
+def get_ext(extype):
+    extype = uploaded_file.name
     return extype
      
 #===upload===
