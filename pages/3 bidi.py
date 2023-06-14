@@ -153,14 +153,11 @@ if uploaded_file is not None:
         #===Association rules===
         @st.cache_data(ttl=3600)
         def freqitem(extype):
-            #global supp, maxlen
             freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
             return freq_item
         
         @st.cache_data(ttl=3600)
         def arm_table(extype):
-            st.write(extype)
-            #global conf, freq_item
             res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
             res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
             res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
