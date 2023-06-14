@@ -48,7 +48,7 @@ def reset_pylda():
 
 def reset_biterm():
      try:
-          biterm_topic.clear()
+          #biterm_topic.clear()
           biterm_map.clear()
           biterm_bar.clear()
      except NameError:
@@ -225,7 +225,7 @@ if uploaded_file is not None:
             with col1:
               numvis = st.selectbox(
                 'Choose topic',
-                (totaltop))
+                (totaltop), on_change=reset_biterm)
               btmvis_coords = biterm_map(extype)
               st.altair_chart(btmvis_coords, use_container_width=True)
             with col2:
