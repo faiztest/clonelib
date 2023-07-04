@@ -253,7 +253,7 @@ if uploaded_file is not None:
           topic_time = paper.Year.values.tolist()
           #cluster_model = KMeans(n_clusters=num_btopic)
           ##nlp = en_core_web_sm.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
-          topic_model = BERTopic(language="multilingual").fit(topic_abs)
+          topic_model = BERTopic(language="english", calculate_probabilities=True, verbose=True).fit(topic_abs)
           topics, probs = topic_model.fit_transform(topic_abs)
           return topic_model, topic_time, topics, probs
         
