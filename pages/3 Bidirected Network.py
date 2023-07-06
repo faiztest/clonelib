@@ -159,25 +159,27 @@ if uploaded_file is not None:
         
         @st.cache_data(ttl=3600)
         def arm_table(extype):
-            res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
-            res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
-            res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            restab = res
-            return res, restab
+            res_ar = association_rules(freq_item, metric='confidence', min_threshold=conf) 
+            res_ar = res_ar[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
+            res_ar['antecedents'] = res_ar['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            res_ar['consequents'] = res_ar['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            restab = res_ar
+            return res_ar, restab
 
         freq_item = freqitem(extype)
         st.write('🚨 The more data you have, the longer you will have to wait.')
 
         if freq_item.empty:
-            st.error('Please lower your value.', icon="🚨")
+            st.error('Please lower the values.', icon="🚨")
         else:
-            res, restab = arm_table(extype)
+            res_ar, restab = arm_table(extype)
             st.dataframe(restab, use_container_width=True)
                    
              #===visualize===
                 
             if st.button('📈 Generate network visualization', on_click=reset_all):
+                res = res_ar
+            try:        
                 with st.spinner('Visualizing, please wait ....'): 
                      @st.cache_data(ttl=3600)
                      def map_node(extype):
@@ -229,6 +231,9 @@ if uploaded_file is not None:
                      return_value = agraph(nodes=nodes, 
                                            edges=edges, 
                                            config=config)
+
+            else:
+                 st.warning('🖱️ Please click the button to proceed.')
     with tab2:
         st.markdown('**Agrawal, R., Imieliński, T., & Swami, A. (1993). Mining association rules between sets of items in large databases. In ACM SIGMOD Record (Vol. 22, Issue 2, pp. 207–216). Association for Computing Machinery (ACM).** https://doi.org/10.1145/170036.170072')
         st.markdown('**Brin, S., Motwani, R., Ullman, J. D., & Tsur, S. (1997). Dynamic itemset counting and implication rules for market basket data. ACM SIGMOD Record, 26(2), 255–264.** https://doi.org/10.1145/253262.253325')
