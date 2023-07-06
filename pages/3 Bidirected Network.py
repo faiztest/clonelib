@@ -232,7 +232,7 @@ if uploaded_file is not None:
                                            edges=edges, 
                                            config=config)
 
-            else:
+            except NameError:
                  st.warning('🖱️ Please click the button to proceed.')
     with tab2:
         st.markdown('**Agrawal, R., Imieliński, T., & Swami, A. (1993). Mining association rules between sets of items in large databases. In ACM SIGMOD Record (Vol. 22, Issue 2, pp. 207–216). Association for Computing Machinery (ACM).** https://doi.org/10.1145/170036.170072')
