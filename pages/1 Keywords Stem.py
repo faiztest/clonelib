@@ -191,11 +191,10 @@ if uploaded_file is not None:
          @st.cache_data(ttl=3600)
          def highlight_cells(value):
              if keytab['old'].duplicated(keep=False).any() and keytab['old'].duplicated(keep=False)[keytab['old'] == value].any():
-                 return 'background-color: FFBE04'
+                 return 'background-color: yellow'
              return '' 
-         keytab = table_keyword(extype)
-         styled_keytab = keytab.style.applymap(highlight_cells, subset=['old']) 
-         st.dataframe(styled_keytab, use_container_width=True)
+         keytab = table_keyword(extype) 
+         st.dataframe(keytab.style.applymap(highlight_cells, subset=['old']), use_container_width=True)
                   
          @st.cache_data(ttl=3600)
          def convert_dfs(extype):
