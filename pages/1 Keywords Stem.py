@@ -188,8 +188,8 @@ if uploaded_file is not None:
              keytab = key.drop(['index'], axis=1).rename(columns={0: 'old'})
              return keytab
          #===coloring the same keywords===
-          @st.cache_data(ttl=3600)
-          def highlight_cells(value):
+         @st.cache_data(ttl=3600)
+         def highlight_cells(value):
              if keytab['old'].duplicated(keep=False).any() and keytab['old'].duplicated(keep=False)[keytab['old'] == value].any():
                  return 'background-color: FFBE04'
              return '' 
