@@ -191,7 +191,7 @@ if uploaded_file is not None:
          @st.cache_data(ttl=3600)
          def highlight_cells(value):
              if keytab['new'].duplicated(keep=False).any() and keytab['new'].duplicated(keep=False)[keytab['new'] == value].any():
-                 return 'background-color: FFC300'
+                 return 'background-color: yellow'
              return '' 
          keytab = table_keyword(extype) 
          st.dataframe(keytab.style.applymap(highlight_cells, subset=['new']), use_container_width=True)
