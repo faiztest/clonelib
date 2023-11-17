@@ -190,11 +190,11 @@ if uploaded_file is not None:
          #===coloring the same keywords===
          @st.cache_data(ttl=3600)
          def highlight_cells(value):
-             if keytab['old'].duplicated(keep=False).any() and keytab['old'].duplicated(keep=False)[keytab['old'] == value].any():
-                 return 'background-color: yellow'
+             if keytab['new'].duplicated(keep=False).any() and keytab['new'].duplicated(keep=False)[keytab['new'] == value].any():
+                 return 'background-color: FFC300'
              return '' 
          keytab = table_keyword(extype) 
-         st.dataframe(keytab.style.applymap(highlight_cells, subset=['old']), use_container_width=True)
+         st.dataframe(keytab.style.applymap(highlight_cells, subset=['new']), use_container_width=True)
                   
          @st.cache_data(ttl=3600)
          def convert_dfs(extype):
