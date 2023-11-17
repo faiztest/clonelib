@@ -22,6 +22,14 @@ st.set_page_config(
      layout="wide"
 )
 st.header("Keywords Stem")
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
 st.subheader('Put your file here...')
 
 def reset_data():
@@ -80,7 +88,7 @@ if uploaded_file is not None:
      with col1:
         method = st.selectbox(
              'Choose method',
-           ('Stemming', 'Lemmatization'), on_change=reset_data)
+           ('Lemmatization', 'Stemming'), on_change=reset_data)
      with col2:
         keyword = st.selectbox(
             'Choose column',
@@ -179,8 +187,15 @@ if uploaded_file is not None:
          def table_keyword(extype):
              keytab = key.drop(['index'], axis=1).rename(columns={0: 'old'})
              return keytab
+         #===coloring the same keywords===
+          @st.cache_data(ttl=3600)
+          def highlight_cells(value):
+             if keytab['old'].duplicated(keep=False).any() and keytab['old'].duplicated(keep=False)[keytab['old'] == value].any():
+                 return 'background-color: FFBE04'
+             return '' 
          keytab = table_keyword(extype)
-         st.dataframe(keytab, use_container_width=True)
+         styled_keytab = keytab.style.applymap(highlight_cells, subset=['old']) 
+         st.dataframe(styled_keytab, use_container_width=True)
                   
          @st.cache_data(ttl=3600)
          def convert_dfs(extype):
@@ -195,7 +210,7 @@ if uploaded_file is not None:
              "text/csv")
              
      with tab3:
-         st.markdown('**Santosa, F. A. (2022). Prior steps into knowledge mapping: Text mining application and comparison. Issues in Science and Technology Librarianship, 102.** https://doi.org/10.29173/istl2736')
+         st.markdown('**Santosa, F. A. (2023). Prior steps into knowledge mapping: Text mining application and comparison. Issues in Science and Technology Librarianship, 102.** https://doi.org/10.29173/istl2736')
      
      with tab4:
          st.markdown('**Beri, A. (2021, January 27). Stemming vs Lemmatization. Medium.** https://towardsdatascience.com/stemming-vs-lemmatization-2daddabcb221')
