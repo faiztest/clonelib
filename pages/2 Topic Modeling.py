@@ -134,7 +134,7 @@ if uploaded_file is not None:
         paper = papers.dropna(subset=[ColCho])
                  
         #===mapping===
-        paper['Abstract_pre'] = paper['ColCho'].map(lambda x: x.lower())
+        paper['Abstract_pre'] = paper[ColCho].map(lambda x: x.lower())
         if rem_punc:
              paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('[,:;\.!-?•=]', ' ', x))
              paper['Abstract_pre'] = paper['Abstract_pre'].str.replace('\u201c|\u201d', '', regex=True) 
