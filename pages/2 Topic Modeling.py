@@ -369,12 +369,6 @@ if uploaded_file is not None:
         def Vis_Barchart(extype):
           fig5 = topic_model.visualize_barchart(top_n_topics=num_topic)
           return fig5
-    
-        @st.cache_data(ttl=3600, show_spinner=False)
-        def Vis_ToT(extype):
-          topics_over_time = topic_model.topics_over_time(topic_abs, topic_time)
-          fig6 = topic_model.visualize_topics_over_time(topics_over_time)
-          return fig6
        
         tab1, tab2, tab3 = st.tabs(["📈 Generate visualization", "📃 Reference", "📓 Recommended Reading"])
         with tab1:
@@ -401,10 +395,6 @@ if uploaded_file is not None:
                     time.sleep(.5)
                     st.toast('Visualize Terms', icon='🏃')
                     fig5 = Vis_Barchart(extype)
-                    
-                    time.sleep(.5)
-                    st.toast('Visualize Topics over Time', icon='🏃')
-                    fig6 = Vis_ToT(extype)
                    
                     with st.expander("Visualize Topics"):
                         st.write(fig1)
