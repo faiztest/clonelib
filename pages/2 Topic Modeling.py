@@ -85,46 +85,6 @@ def reset_all():
 #===avoiding deadlock===
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
         
-#===clean csv===
-@st.cache_data(ttl=3600, show_spinner=False)
-def clean_csv(extype):
-    try:
-        paper = papers.dropna(subset=['Abstract'])
-    except KeyError:
-        st.error('Error: Please check your Abstract column.')
-        sys.exit(1)
-    paper = paper[~paper.Abstract.str.contains("No abstract available")]
-    paper = paper[~paper.Abstract.str.contains("STRAIT")]
-            
-        #===mapping===
-    paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!-?•=]', ' ', x))
-    paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: x.lower())
-    paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('©.*', '', x))
-    paper['Abstract_pre'] = paper['Abstract_pre'].str.replace('\u201c|\u201d', '', regex=True) 
-          
-         #===stopword removal===
-    stop = stopwords.words('english')
-    paper['Abstract_stop'] = paper['Abstract_pre'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
-     
-        #===lemmatize===
-    lemmatizer = WordNetLemmatizer()
-    def lemmatize_words(text):
-        words = text.split()
-        words = [lemmatizer.lemmatize(word) for word in words]
-        return ' '.join(words)
-    paper['Abstract_lem'] = paper['Abstract_stop'].apply(lemmatize_words)
-
-    words_rmv = [word.strip() for word in words_to_remove.split(";")]
-    remove_dict = {word: None for word in words_rmv}
-    def remove_words(text):
-         words = text.split()
-         cleaned_words = [word for word in words if word not in remove_dict]
-         return ' '.join(cleaned_words) 
-    paper['Abstract_lem'] = paper['Abstract_lem'].map(remove_words)
-     
-    topic_abs = paper.Abstract_lem.values.tolist()
-    return topic_abs, paper
-
 #===upload file===
 @st.cache_data(ttl=3600)
 def upload(file):
@@ -153,14 +113,53 @@ if uploaded_file is not None:
          papers = upload(extype) 
     elif extype.endswith('.txt'):
          papers = conv_txt(extype)
-          
-    c1, c2, c3 = st.columns([3,2,5])
+
+    coldf = papers.select_dtypes(include=['object']).columns.tolist() 
+     
+    c1, c2 = st.columns([4,6])
     method = c1.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm', 'BERTopic'), on_change=reset_all)
-    num_cho = c2.number_input('Choose number of topics', min_value=2, max_value=30, value=5)
-    words_to_remove = c3.text_input("Remove specific words. Separate words by semicolons (;)") 
+    num_cho = c1.number_input('Choose number of topics', min_value=2, max_value=30, value=5)
+    ColCho = c1.selectbox(
+            'Choose column',
+            (coldf), on_change=reset_all)
+    words_to_remove = c2.text_input("Remove specific words. Separate words by semicolons (;)")
+     
+    #===clean csv===
+    @st.cache_data(ttl=3600, show_spinner=False)
+    def clean_csv(extype):
+        paper = papers.dropna(subset=[ColCho])
+                 
+        #===mapping===
+        paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!-?•=]', ' ', x))
+        paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: x.lower())
+        paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('©.*', '', x))
+        paper['Abstract_pre'] = paper['Abstract_pre'].str.replace('\u201c|\u201d', '', regex=True) 
+              
+        #===stopword removal===
+        stop = stopwords.words('english')
+        paper['Abstract_stop'] = paper['Abstract_pre'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+          
+        #===lemmatize===
+        lemmatizer = WordNetLemmatizer()
+        def lemmatize_words(text):
+            words = text.split()
+            words = [lemmatizer.lemmatize(word) for word in words]
+            return ' '.join(words)
+        paper['Abstract_lem'] = paper['Abstract_stop'].apply(lemmatize_words)
     
+        words_rmv = [word.strip() for word in words_to_remove.split(";")]
+        remove_dict = {word: None for word in words_rmv}
+        def remove_words(text):
+             words = text.split()
+             cleaned_words = [word for word in words if word not in remove_dict]
+             return ' '.join(cleaned_words) 
+        paper['Abstract_lem'] = paper['Abstract_lem'].map(remove_words)
+         
+        topic_abs = paper.Abstract_lem.values.tolist()
+        return topic_abs, paper
+
     d1, d2 = st.columns([8,2]) 
     d2.info("Don't do anything during the computing", icon="⚠️")
     topic_abs, paper=clean_csv(extype) 
