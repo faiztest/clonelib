@@ -328,9 +328,6 @@ if uploaded_file is not None:
     elif method == 'BERTopic':
         @st.cache_data(ttl=3600, show_spinner=False)
         def bertopic_vis(extype):
-          if 'Publication Year' in paper.columns:
-               paper.rename(columns={'Publication Year': 'Year'}, inplace=True)
-          topic_time = paper.Year.values.tolist()
           umap_model = UMAP(n_neighbors=bert_n_neighbors, n_components=bert_n_components, 
                   min_dist=0.0, metric='cosine', random_state=bert_random_state)   
           cluster_model = KMeans(n_clusters=num_topic)
@@ -345,7 +342,7 @@ if uploaded_file is not None:
                lang = 'multilingual'
           topic_model = BERTopic(embedding_model=emb_mod, hdbscan_model=cluster_model, language=lang, umap_model=umap_model, top_n_words=bert_top_n_words)
           topics, probs = topic_model.fit_transform(topic_abs)
-          return topic_model, topic_time, topics, probs
+          return topic_model, topics, probs
         
         @st.cache_data(ttl=3600, show_spinner=False)
         def Vis_Topics(extype):
@@ -370,7 +367,7 @@ if uploaded_file is not None:
 
         @st.cache_data(ttl=3600, show_spinner=False)
         def Vis_Barchart(extype):
-          fig5 = topic_model.visualize_barchart(top_n_topics=num_topic) #, n_words=10)
+          fig5 = topic_model.visualize_barchart(top_n_topics=num_topic)
           return fig5
     
         @st.cache_data(ttl=3600, show_spinner=False)
@@ -384,7 +381,7 @@ if uploaded_file is not None:
           try:
                with st.spinner('Performing computations. Please wait ...'):
                
-                    topic_model, topic_time, topics, probs = bertopic_vis(extype)
+                    topic_model, topics, probs = bertopic_vis(extype)
                     time.sleep(.5)
                     st.toast('Visualize Topics', icon='🏃')
                     fig1 = Vis_Topics(extype)
@@ -419,9 +416,7 @@ if uploaded_file is not None:
                         st.write(fig3)
                     with st.expander("Visualize Topic Similarity"):
                         st.write(fig4)
-                    with st.expander("Visualize Topics over Time"):
-                        st.write(fig6)                             
-                    
+                                        
           except ValueError:
                st.error('🙇‍♂️ Please raise the number of topics and click submit')
           
