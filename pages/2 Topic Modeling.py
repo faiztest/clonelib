@@ -116,7 +116,7 @@ if uploaded_file is not None:
 
     coldf = papers.select_dtypes(include=['object']).columns.tolist() 
      
-    c1, c2, c3 = st.columns([3,4,3])
+    c1, c2 = st.columns([3,4])
     method = c1.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm', 'BERTopic'), on_change=reset_all)
@@ -125,8 +125,8 @@ if uploaded_file is not None:
             'Choose column',
             (coldf), on_change=reset_all)
     words_to_remove = c2.text_input("Remove specific words. Separate words by semicolons (;)")
-    rem_copyright = c3.toggle('Remove copyright statement', value=True, on_change=reset_all)
-    rem_punc = c3.toggle('Remove punctuation', value=True, on_change=reset_all)
+    rem_copyright = c1.toggle('Remove copyright statement', value=True, on_change=reset_all)
+    rem_punc = c2.toggle('Remove punctuation', value=True, on_change=reset_all)
      
     #===clean csv===
     @st.cache_data(ttl=3600, show_spinner=False)
