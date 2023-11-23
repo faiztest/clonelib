@@ -420,8 +420,8 @@ if uploaded_file is not None:
           except ValueError:
                st.error('🙇‍♂️ Please raise the number of topics and click submit')
           
-          except NameError:
-               st.warning('🖱️ Please click Submit')
+          #except NameError:
+               #st.warning('🖱️ Please click Submit')
 
         with tab2:
           st.markdown('**Grootendorst, M. (2022). BERTopic: Neural topic modeling with a class-based TF-IDF procedure. arXiv preprint arXiv:2203.05794.** https://doi.org/10.48550/arXiv.2203.05794')
