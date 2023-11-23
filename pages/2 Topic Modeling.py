@@ -121,7 +121,7 @@ if uploaded_file is not None:
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm', 'BERTopic'), on_change=reset_all)
     num_cho = c1.number_input('Choose number of topics', min_value=2, max_value=30, value=5)
-    ColCho = c1.selectbox(
+    ColCho = c2.selectbox(
             'Choose column',
             (coldf), on_change=reset_all)
     words_to_remove = c2.text_input("Remove specific words. Separate words by semicolons (;)")
