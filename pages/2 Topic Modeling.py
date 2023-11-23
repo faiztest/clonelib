@@ -125,8 +125,8 @@ if uploaded_file is not None:
             'Choose column',
             (coldf), on_change=reset_all)
     words_to_remove = c2.text_input("Remove specific words. Separate words by semicolons (;)")
-    rem_copyright = st.checkbox('Remove copyright statement', value=False, on_change=reset_all)
-    rem_punc = st.checkbox('Remove punctuation', value=False, on_change=reset_all)
+    rem_copyright = st.toggle('Remove copyright statement', value=True, on_change=reset_all)
+    rem_punc = st.toggle('Remove punctuation', value=True, on_change=reset_all)
      
     #===clean csv===
     @st.cache_data(ttl=3600, show_spinner=False)
