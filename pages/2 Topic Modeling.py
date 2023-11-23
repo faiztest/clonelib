@@ -116,7 +116,7 @@ if uploaded_file is not None:
 
     coldf = papers.select_dtypes(include=['object']).columns.tolist() 
      
-    c1, c2 = st.columns([4,6])
+    c1, c2, c3 = st.columns([3,4,3])
     method = c1.selectbox(
             'Choose method',
             ('Choose...', 'pyLDA', 'Biterm', 'BERTopic'), on_change=reset_all)
@@ -125,6 +125,8 @@ if uploaded_file is not None:
             'Choose column',
             (coldf), on_change=reset_all)
     words_to_remove = c2.text_input("Remove specific words. Separate words by semicolons (;)")
+    rem_copyright = st.checkbox('Remove copyright statement', value=False, on_change=reset_all)
+    rem_punc = st.checkbox('Remove punctuation', value=False, on_change=reset_all)
      
     #===clean csv===
     @st.cache_data(ttl=3600, show_spinner=False)
@@ -132,11 +134,13 @@ if uploaded_file is not None:
         paper = papers.dropna(subset=[ColCho])
                  
         #===mapping===
-        paper['Abstract_pre'] = paper['Abstract'].map(lambda x: re.sub('[,:;\.!-?•=]', ' ', x))
-        paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: x.lower())
+        paper['Abstract_pre'] = paper['ColCho'].map(lambda x: x.lower())
+        if rem_punc:
+             paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('[,:;\.!-?•=]', ' ', x))
+             paper['Abstract_pre'] = paper['Abstract_pre'].str.replace('\u201c|\u201d', '', regex=True) 
+        if rem_copyright:  
         paper['Abstract_pre'] = paper['Abstract_pre'].map(lambda x: re.sub('©.*', '', x))
-        paper['Abstract_pre'] = paper['Abstract_pre'].str.replace('\u201c|\u201d', '', regex=True) 
-              
+        
         #===stopword removal===
         stop = stopwords.words('english')
         paper['Abstract_stop'] = paper['Abstract_pre'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
