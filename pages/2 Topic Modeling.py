@@ -164,7 +164,7 @@ if uploaded_file is not None:
         topic_abs = paper.Abstract_lem.values.tolist()
         return topic_abs, paper
 
-    d1, d2 = st.columns([8,2]) 
+    d1, d2 = st.columns([7,3]) 
     d2.info("Don't do anything during the computing", icon="⚠️")
     topic_abs, paper=clean_csv(extype) 
 
