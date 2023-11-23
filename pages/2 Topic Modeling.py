@@ -114,8 +114,8 @@ if uploaded_file is not None:
     elif extype.endswith('.txt'):
          papers = conv_txt(extype)
 
-    coldf = papers.select_dtypes(include=['object']).columns.tolist() 
-     
+    coldf = sorted(papers.select_dtypes(include=['object']).columns.tolist())
+        
     c1, c2 = st.columns([3,4])
     method = c1.selectbox(
             'Choose method',
