@@ -29,8 +29,7 @@ import tmplot as tmp
 import tomotopy
 import sys
 import spacy
-#import en_core_web_sm
-#from spacy.lang.en.examples import sentences
+import en_core_web_md
 import pipeline
 from html2image import Html2Image
 from umap import UMAP
@@ -339,7 +338,7 @@ if uploaded_file is not None:
                emb_mod = 'all-MiniLM-L6-v2'
                lang = 'en'
           elif bert_embedding_model == 'en_core_web_md':
-               emb_mod = spacy.load("en_core_web_md", exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
+               emb_mod = en_core_web_md.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
                lang = 'en'
           elif bert_embedding_model == 'paraphrase-multilingual-MiniLM-L12-v2':
                emb_mod = 'paraphrase-multilingual-MiniLM-L12-v2'
