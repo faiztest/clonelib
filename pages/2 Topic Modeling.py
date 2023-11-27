@@ -339,7 +339,7 @@ if uploaded_file is not None:
                emb_mod = 'all-MiniLM-L6-v2'
                lang = 'en'
           elif bert_embedding_model == 'en_core_web_sm':
-               emb_mod = en_core_web_sm.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
+               emb_mod = spacy.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
                lang = 'en'
           elif bert_embedding_model == 'paraphrase-multilingual-MiniLM-L12-v2':
                emb_mod = 'paraphrase-multilingual-MiniLM-L12-v2'
