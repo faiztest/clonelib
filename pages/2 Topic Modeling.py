@@ -29,7 +29,8 @@ import tmplot as tmp
 import tomotopy
 import sys
 import spacy
-import en_core_web_sm
+#import en_core_web_sm
+from spacy.lang.en.examples import sentences
 import pipeline
 from html2image import Html2Image
 from umap import UMAP
@@ -184,7 +185,7 @@ if uploaded_file is not None:
               bert_n_neighbors = t2.number_input('n_neighbors', value=15 , min_value=1, max_value=None, step=1)
               bert_embedding_model = st.radio(
                    "embedding_model", 
-                   ["all-MiniLM-L6-v2", "en_core_web_sm", "paraphrase-multilingual-MiniLM-L12-v2"], index=0, horizontal=True)
+                   ["all-MiniLM-L6-v2", "paraphrase-multilingual-MiniLM-L12-v2", "en_core_web_sm"], index=0, horizontal=True)
          else:
               st.write('Please choose your preferred method')
     if st.button("Submit", on_click=reset_all):
@@ -410,8 +411,8 @@ if uploaded_file is not None:
                     with st.expander("Visualize Topic Similarity"):
                         st.write(fig4)
                                         
-          except ValueError:
-               st.error('🙇‍♂️ Please raise the number of topics and click submit')
+          #except ValueError:
+               #st.error('🙇‍♂️ Please raise the number of topics and click submit')
           
           except NameError:
                st.warning('🖱️ Please click Submit')
