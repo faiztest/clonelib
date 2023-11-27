@@ -185,7 +185,7 @@ if uploaded_file is not None:
               bert_n_neighbors = t2.number_input('n_neighbors', value=15 , min_value=1, max_value=None, step=1)
               bert_embedding_model = st.radio(
                    "embedding_model", 
-                   ["all-MiniLM-L6-v2", "paraphrase-multilingual-MiniLM-L12-v2", "en_core_web_sm"], index=0, horizontal=True)
+                   ["all-MiniLM-L6-v2", "paraphrase-multilingual-MiniLM-L12-v2", "en_core_web_md"], index=0, horizontal=True)
          else:
               st.write('Please choose your preferred method')
     if st.button("Submit", on_click=reset_all):
@@ -338,8 +338,8 @@ if uploaded_file is not None:
           if bert_embedding_model == 'all-MiniLM-L6-v2':
                emb_mod = 'all-MiniLM-L6-v2'
                lang = 'en'
-          elif bert_embedding_model == 'en_core_web_sm':
-               emb_mod = spacy.load(exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
+          elif bert_embedding_model == 'en_core_web_md':
+               emb_mod = spacy.load('en_core_web_md', exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
                lang = 'en'
           elif bert_embedding_model == 'paraphrase-multilingual-MiniLM-L12-v2':
                emb_mod = 'paraphrase-multilingual-MiniLM-L12-v2'
