@@ -183,7 +183,7 @@ if uploaded_file is not None:
             st.error('Please lower your value.', icon="🚨")
         else:
             res, restab = arm_table(extype)
-            st.data_editor(restab, use_container_width=True)
+            res = st.data_editor(restab, use_container_width=True)
                    
              #===visualize===
                 
