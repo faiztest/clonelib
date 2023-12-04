@@ -17,6 +17,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import sys
+import time
 
 #===config===
 st.set_page_config(
@@ -24,7 +25,15 @@ st.set_page_config(
      page_icon="🥥",
      layout="wide"
 )
-st.header("Biderected Keywords Network")
+st.header("Bidirected Keywords Network")
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
 st.subheader('Put your file here...')
 
 #===clear cache===
@@ -75,7 +84,7 @@ if uploaded_file is not None:
     with col1:
         method = st.selectbox(
              'Choose method',
-           ('Stemming', 'Lemmatization'), on_change=reset_all)
+           ('Lemmatization', 'Stemming'), on_change=reset_all)
     with col2:
         keyword = st.selectbox(
             'Choose column',
@@ -148,7 +157,7 @@ if uploaded_file is not None:
             'Maximum length of the itemsets generated',
             2, 8, (2), on_change=reset_all)
 
-    tab1, tab2 = st.tabs(["📈 Result & Generate visualization", "📓 Recommended Reading"])
+    tab1, tab2, tab3 = st.tabs(["📈 Result & Generate visualization", "📃 Reference", "📓 Recommended Reading"])
     
     with tab1:
         #===Association rules===
@@ -159,33 +168,32 @@ if uploaded_file is not None:
         
         @st.cache_data(ttl=3600)
         def arm_table(extype):
-            res_ar = association_rules(freq_item, metric='confidence', min_threshold=conf) 
-            res_ar = res_ar[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
-            res_ar['antecedents'] = res_ar['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            res_ar['consequents'] = res_ar['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            restab = res_ar
-            return res_ar, restab
+            res = association_rules(freq_item, metric='confidence', min_threshold=conf) 
+            res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
+            res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
+            restab['Show'] = True 
+            restab = res
+            return res, restab
 
         freq_item = freqitem(extype)
         st.write('🚨 The more data you have, the longer you will have to wait.')
 
         if freq_item.empty:
-            st.error('Please lower the values.', icon="🚨")
+            st.error('Please lower your value.', icon="🚨")
         else:
-            res_ar, restab = arm_table(extype)
+            res, restab = arm_table(extype)
             st.dataframe(restab, use_container_width=True)
                    
              #===visualize===
                 
             if st.button('📈 Generate network visualization', on_click=reset_all):
-                res = res_ar
-            try:        
                 with st.spinner('Visualizing, please wait ....'): 
                      @st.cache_data(ttl=3600)
                      def map_node(extype):
                         res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
-                        res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) #[['antecedents','antecedent support']]
-                        res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) #[['consequents','consequent support']]
+                        res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) 
+                        res_con = res[['consequents','consequent support']].rename(columns={'consequents': 'node', 'consequent support': 'size'}) 
                         res_node = pd.concat([res_ant, res_con]).drop_duplicates(keep='first')
                         return res_node, res
                      
@@ -200,12 +208,11 @@ if uploaded_file is not None:
                             nodes.append( Node(id=x, 
                                             label=x,
                                             size=50*w+10,
-                                            shape="circularImage",
+                                            shape="dot",
                                             labelHighlightBold=True,
                                             group=x,
                                             opacity=10,
-                                            mass=1,
-                                            image="https://upload.wikimedia.org/wikipedia/commons/f/f1/Eo_circle_yellow_circle.svg") 
+                                            mass=1)
                                     )   
 
                         for y,z,a,b in zip(res['antecedents'],res['consequents'],res['confidence'],res['to']):
@@ -231,10 +238,12 @@ if uploaded_file is not None:
                      return_value = agraph(nodes=nodes, 
                                            edges=edges, 
                                            config=config)
-
-            except NameError:
-                 st.warning('🖱️ Please click the button to proceed.')
+                     time.sleep(1)
+                     st.toast('Process completed', icon='📈')
     with tab2:
+         st.markdown('**Santosa, F. A. (2023). Adding Perspective to the Bibliometric Mapping Using Bidirected Graph. Open Information Science, 7(1), 20220152.** https://doi.org/10.1515/opis-2022-0152')
+         
+    with tab3:
         st.markdown('**Agrawal, R., Imieliński, T., & Swami, A. (1993). Mining association rules between sets of items in large databases. In ACM SIGMOD Record (Vol. 22, Issue 2, pp. 207–216). Association for Computing Machinery (ACM).** https://doi.org/10.1145/170036.170072')
         st.markdown('**Brin, S., Motwani, R., Ullman, J. D., & Tsur, S. (1997). Dynamic itemset counting and implication rules for market basket data. ACM SIGMOD Record, 26(2), 255–264.** https://doi.org/10.1145/253262.253325')
         st.markdown('**Edmonds, J., & Johnson, E. L. (2003). Matching: A Well-Solved Class of Integer Linear Programs. Combinatorial Optimization — Eureka, You Shrink!, 27–30.** https://doi.org/10.1007/3-540-36478-1_3') 
