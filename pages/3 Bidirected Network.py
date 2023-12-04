@@ -174,7 +174,7 @@ if uploaded_file is not None:
             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             restab = res
             restab['Show'] = True 
-            return res, restab
+            return restab
 
         freq_item = freqitem(extype)
         st.write('🚨 The more data you have, the longer you will have to wait.')
@@ -183,7 +183,8 @@ if uploaded_file is not None:
             st.error('Please lower your value.', icon="🚨")
         else:
             res, restab = arm_table(extype)
-            res = st.data_editor(restab, use_container_width=True)
+            restabz = st.data_editor(restab, use_container_width=True)
+            res = restabz[restabz['Show'] == True] 
                    
              #===visualize===
                 
