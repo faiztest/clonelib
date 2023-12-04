@@ -169,7 +169,7 @@ if uploaded_file is not None:
         @st.cache_data(ttl=3600)
         def arm_table(extype):
             restab = association_rules(freq_item, metric='confidence', min_threshold=conf) 
-            restab = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
+            restab = restab[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
             restab['antecedents'] = restab['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             restab['consequents'] = restab['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             restab['Show'] = True 
