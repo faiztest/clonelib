@@ -182,7 +182,7 @@ if uploaded_file is not None:
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
         else:
-            res, restab = arm_table(extype)
+            restab = arm_table(extype)
             restabz = st.data_editor(restab, use_container_width=True)
             res = restabz[restabz['Show'] == True] 
                    
