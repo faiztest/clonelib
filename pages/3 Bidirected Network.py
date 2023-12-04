@@ -172,7 +172,7 @@ if uploaded_file is not None:
             res = res[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
             res['antecedents'] = res['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             res['consequents'] = res['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            pd.restab({'Show': [True]}).bool()
+            restab['Show'] = True
             restab = res
             return res, restab
 
