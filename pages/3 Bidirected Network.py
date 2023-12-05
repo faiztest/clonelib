@@ -165,19 +165,26 @@ if uploaded_file is not None:
         def freqitem(extype):
             freq_item = fpgrowth(df, min_support=supp, use_colnames=True, max_len=maxlen)
             return freq_item
-        
+
+        freq_item = freqitem(extype)
+        col1, col2 = st.columns(2)
+        with col1:
+             st.write('🚨 The more data you have, the longer you will have to wait.')
+        with col2:
+             showall = st.checkbox('Show all nodes', value=True)
+
         @st.cache_data(ttl=3600)
         def arm_table(extype):
             restab = association_rules(freq_item, metric='confidence', min_threshold=conf) 
             restab = restab[['antecedents', 'consequents', 'antecedent support', 'consequent support', 'support', 'confidence', 'lift', 'conviction']]
             restab['antecedents'] = restab['antecedents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
             restab['consequents'] = restab['consequents'].apply(lambda x: ', '.join(list(x))).astype('unicode')
-            restab['Show'] = True 
-            return restab
-
-        freq_item = freqitem(extype)
-        st.write('🚨 The more data you have, the longer you will have to wait.')
-
+            if showall:
+                 restab['Show'] = True
+            else:
+                 restab['Show'] = False
+            return restab 
+         
         if freq_item.empty:
             st.error('Please lower your value.', icon="🚨")
         else:
