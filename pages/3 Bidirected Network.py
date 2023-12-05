@@ -171,7 +171,7 @@ if uploaded_file is not None:
         with col1:
              st.write('🚨 The more data you have, the longer you will have to wait.')
         with col2:
-             showall = st.checkbox('Show all nodes', value=True)
+             showall = st.checkbox('Show all nodes', value=True, on_change=reset_all)
 
         @st.cache_data(ttl=3600)
         def arm_table(extype):
