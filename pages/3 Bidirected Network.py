@@ -206,7 +206,7 @@ if uploaded_file is not None:
                      
                      res_node, res = map_node(extype)
 
-                     @st.@st.partial
+                     @st.partial
                      def arul_network(extype):
                         nodes = []
                         edges = []
