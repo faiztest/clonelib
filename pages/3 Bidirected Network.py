@@ -196,7 +196,7 @@ if uploaded_file is not None:
                 
             if st.button('📈 Generate network visualization', on_click=reset_all):
                 with st.spinner('Visualizing, please wait ....'): 
-                     @st.cache_data(ttl=3600)
+                     @st.partial
                      def map_node(extype):
                         res['to'] = res['antecedents'] + ' → ' + res['consequents'] + '\n Support = ' +  res['support'].astype(str) + '\n Confidence = ' +  res['confidence'].astype(str) + '\n Conviction = ' +  res['conviction'].astype(str)
                         res_ant = res[['antecedents','antecedent support']].rename(columns={'antecedents': 'node', 'antecedent support': 'size'}) 
@@ -206,7 +206,7 @@ if uploaded_file is not None:
                      
                      res_node, res = map_node(extype)
 
-                     @st.cache_data(ttl=3600)
+                     @st.@st.partial
                      def arul_network(extype):
                         nodes = []
                         edges = []
@@ -247,6 +247,7 @@ if uploaded_file is not None:
                                            config=config)
                      time.sleep(1)
                      st.toast('Process completed', icon='📈')
+                    
     with tab2:
          st.markdown('**Santosa, F. A. (2023). Adding Perspective to the Bibliometric Mapping Using Bidirected Graph. Open Information Science, 7(1), 20220152.** https://doi.org/10.1515/opis-2022-0152')
          
